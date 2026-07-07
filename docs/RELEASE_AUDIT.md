@@ -19,6 +19,16 @@ Measured Concept B mockup checks:
 - iPhone-width Concept B phones: 4 screens, 355px wide, no internal vertical overflow.
 - iPhone-width bottom-nav clearance: minimum 20px before nav.
 
+Measured production React app checks:
+
+- `npm run build` passes after Concept B conversion.
+- Desktop app: no horizontal overflow, six bottom-nav items, minimum button height 44px.
+- iPhone-width app: 375px client width, 375px scroll width, no horizontal overflow.
+- iPhone-width app: bottom nav is fixed, 64px high, 14px above viewport bottom.
+- iPhone-width app: dashboard study card clears bottom nav by 13px in first viewport.
+- iPhone-width app: study-card duplicate metric grid is hidden; stats remain available below.
+- Main screens render without horizontal overflow: Lesson, Quiz, Vocab, Speak, Sync.
+
 ## Design Audit
 
 - [x] Concept B is the selected/recommended direction.
@@ -59,7 +69,7 @@ Measured Concept B mockup checks:
 
 ## Remaining Before Public Release
 
-- [ ] Apply Concept B styling to the actual React app screens, not only the mockup board.
+- [x] Apply Concept B styling to the actual React app screens, not only the mockup board.
 - [ ] Add automated tests for profile merge and screen rendering.
 - [ ] Add import validation for profile JSON.
 - [ ] Add visible offline/cache status in the production app.
@@ -71,7 +81,6 @@ Measured Concept B mockup checks:
 
 Do not call the app release-ready until:
 
-1. The production React UI matches the audited Concept B direction.
-2. `npm run build` passes.
-3. GitHub Pages deployment completes.
-4. iPhone PWA install, offline launch, TTS, local progress, and backup/export are manually verified.
+1. GitHub Pages deployment completes.
+2. iPhone PWA install, offline launch, TTS, local progress, and backup/export are manually verified.
+3. Google OAuth client ID is configured if Drive sync is part of release acceptance.

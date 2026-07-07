@@ -93,6 +93,7 @@ function Dashboard({
   const correctAnswers = profile.quizHistory.filter((item) => item.correct).length;
   const lastSynced = profile.settings.lastSyncedAt ? new Date(profile.settings.lastSyncedAt).toLocaleString() : "Not synced";
   const quizPercent = Math.round((profile.quizHistory.length / quizQuestions.length) * 100);
+  const studyCardTitle = currentLesson.id === "refresher" ? "Refresher quiz" : currentLesson.title;
 
   return (
     <main className="screen">
@@ -123,7 +124,7 @@ function Dashboard({
           <div className="study-card-top">
             <div>
               <p className="eyebrow">Today</p>
-              <h2>{currentLesson.title}</h2>
+              <h2>{studyCardTitle}</h2>
             </div>
             <span className="sync-pill">
               <Cloud size={14} />
@@ -616,21 +617,23 @@ export default function App() {
         </button>
         <div className="nav-actions">
           {[
-            ["dashboard", Home],
-            ["lesson", BookOpen],
-            ["quiz", GraduationCap],
-            ["vocab", Search],
-            ["practice", RotateCcw],
-            ["sync", Cloud],
-          ].map(([name, Icon]) => (
+            ["dashboard", "Home", Home],
+            ["lesson", "Lesson", BookOpen],
+            ["quiz", "Quiz", GraduationCap],
+            ["vocab", "Vocab", Search],
+            ["practice", "Speak", RotateCcw],
+            ["sync", "Sync", Cloud],
+          ].map(([name, label, Icon]) => (
             <button
               key={name as string}
               className={view === name ? "active" : ""}
               type="button"
               onClick={() => setView(name as View)}
-              title={name as string}
+              title={label as string}
+              aria-label={label as string}
             >
               <Icon size={18} />
+              <span className="nav-label">{label as string}</span>
             </button>
           ))}
         </div>
