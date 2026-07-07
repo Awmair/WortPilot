@@ -36,8 +36,8 @@ The current app already includes:
 - PWA manifest and service worker.
 - Raster app icon assets.
 - Dashboard, lesson, quiz, vocab, talk-back, Drive sync, backup/reminder controls.
-- Local IndexedDB profile storage.
-- Optional Google Drive `appDataFolder` sync module.
+- Local IndexedDB profile storage with localStorage fallback.
+- Optional Google Drive `appDataFolder` Save & Sync / Restore module.
 
 ## Non-Negotiables
 
@@ -47,6 +47,8 @@ The current app already includes:
 - Every German word/phrase must be tappable or wrapped by the German audio system.
 - Recordings stay local unless the user explicitly changes that policy.
 - Drive sync uses only `https://www.googleapis.com/auth/drive.appdata`.
+- Drive sync is manual in V1: Save & Sync uploads local JSON, Restore from Drive replaces local data, and failed cloud actions leave local data intact.
+- Never commit Google client secrets, refresh tokens, private keys, `.env` files, or real user data.
 - Prioritize business/client German over tourist phrases.
 
 ## Useful Commands

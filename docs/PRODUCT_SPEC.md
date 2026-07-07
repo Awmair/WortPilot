@@ -6,6 +6,8 @@ WortPilot is a zero-cost, iPhone-first PWA for learning practical German for cli
 
 The app is local-first: it must work without accounts, subscriptions, paid APIs, or a backend. Optional Google Drive sync stores only the learner profile in Drive `appDataFolder`.
 
+The sync model is intentionally manual for V1. All edits save locally first. Save & Sync uploads the latest local JSON to Drive. Restore from Drive replaces local data with the Drive copy. There is no real-time multi-device merge/conflict handling in V1.
+
 ## Target User
 
 - Fluent English speaker starting from zero German.
@@ -83,9 +85,11 @@ Every German word or phrase shown in the app should be tappable and pronounceabl
 ### Profile, Backup, And Sync
 
 - IndexedDB local profile.
+- localStorage fallback if IndexedDB is unavailable.
 - Optional Google Drive `appDataFolder` hidden profile JSON.
 - Manual JSON export/import.
-- Conflict handling by latest per-record timestamps.
+- Local sync state: Unsynced, Syncing, Synced, Sync issue.
+- Failed sync keeps local data intact and allows retry later.
 - Sync excludes recordings.
 
 ## Success Criteria
@@ -96,7 +100,7 @@ Every German word or phrase shown in the app should be tappable and pronounceabl
 - Tappable German works consistently across lesson and vocabulary surfaces.
 - Local progress survives browser close/reopen.
 - JSON export/import can restore a profile.
-- Drive sync can create, update, and restore hidden profile data once OAuth is configured.
+- Drive sync can create/update a hidden backup and restore it as an explicit replace-local action once OAuth is configured.
 
 ## Non-Goals For V1
 
@@ -105,5 +109,5 @@ Every German word or phrase shown in the app should be tappable and pronounceabl
 - No App Store app.
 - No AI pronunciation scoring.
 - No native push notifications from static hosting.
+- No automatic multi-device merge/conflict handling.
 - No multi-user accounts.
-

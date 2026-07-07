@@ -1,9 +1,15 @@
 import type { UserProfile } from "../types";
-import { mergeProfiles, profileForCloud } from "./storage";
+import { normalizeProfile, profileForCloud } from "./storage";
 
 const SCOPE = "https://www.googleapis.com/auth/drive.appdata";
 const FILE_NAME = "german-learning-profile.json";
 const GIS_SRC = "https://accounts.google.com/gsi/client";
+
+class DriveHttpError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+  }
+}
 
 function loadScript(src: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -49,7 +55,7 @@ async function driveFetch<T>(token: string, url: string, init: RequestInit = {})
       ...(init.headers ?? {}),
     },
   });
-  if (!response.ok) throw new Error(`Drive request failed: ${response.status}`);
+  if (!response.ok) throw new DriveHttpError(response.status, `Drive request failed: ${response.status}`);
   return response.json() as Promise<T>;
 }
 
@@ -70,8 +76,8 @@ async function downloadProfile(token: string, fileId: string): Promise<UserProfi
   const response = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (!response.ok) throw new Error(`Could not download Drive profile: ${response.status}`);
-  return response.json() as Promise<UserProfile>;
+  if (!response.ok) throw new DriveHttpError(response.status, `Could not download Drive profile: ${response.status}`);
+  return normalizeProfile(await response.json());
 }
 
 async function uploadProfile(token: string, profile: UserProfile, fileId?: string): Promise<string> {
@@ -101,17 +107,51 @@ async function uploadProfile(token: string, profile: UserProfile, fileId?: strin
   return result.id;
 }
 
-export async function syncWithDrive(localProfile: UserProfile, clientId: string): Promise<UserProfile> {
+function isExpiredTokenError(error: unknown) {
+  return error instanceof DriveHttpError && (error.status === 401 || error.status === 403);
+}
+
+async function withTokenRetry<T>(clientId: string, operation: (token: string) => Promise<T>): Promise<T> {
   const token = await requestToken(clientId);
-  const fileId = await findProfileFile(token);
-  const merged = fileId ? mergeProfiles(localProfile, await downloadProfile(token, fileId)) : localProfile;
-  await uploadProfile(token, { ...merged, settings: { ...merged.settings, lastSyncedAt: new Date().toISOString() } }, fileId);
-  return {
-    ...merged,
-    settings: {
-      ...merged.settings,
-      lastSyncedAt: new Date().toISOString(),
-      signedInHint: "Google Drive connected",
-    },
-  };
+  try {
+    return await operation(token);
+  } catch (error) {
+    if (!isExpiredTokenError(error)) throw error;
+    const freshToken = await requestToken(clientId);
+    return operation(freshToken);
+  }
+}
+
+export async function saveProfileToDrive(localProfile: UserProfile, clientId: string): Promise<UserProfile> {
+  return withTokenRetry(clientId, async (token) => {
+    const fileId = await findProfileFile(token);
+    const syncedAt = new Date().toISOString();
+    const profile = normalizeProfile({
+      ...localProfile,
+      settings: {
+        ...localProfile.settings,
+        lastSyncedAt: syncedAt,
+        signedInHint: "Google Drive connected",
+      },
+    });
+    await uploadProfile(token, profile, fileId);
+    return profile;
+  });
+}
+
+export async function restoreProfileFromDrive(clientId: string): Promise<UserProfile> {
+  return withTokenRetry(clientId, async (token) => {
+    const fileId = await findProfileFile(token);
+    if (!fileId) throw new Error("No Drive backup found yet.");
+    const restored = await downloadProfile(token, fileId);
+    const syncedAt = new Date().toISOString();
+    return normalizeProfile({
+      ...restored,
+      settings: {
+        ...restored.settings,
+        lastSyncedAt: syncedAt,
+        signedInHint: "Google Drive connected",
+      },
+    });
+  });
 }

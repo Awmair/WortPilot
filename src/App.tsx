@@ -21,13 +21,14 @@ import { AudioRecorder } from "./components/AudioRecorder";
 import { SpeakableGerman } from "./components/SpeakableGerman";
 import { TextWithGermanAudio } from "./components/TextWithGermanAudio";
 import { lessons, quizQuestions, vocabulary } from "./data/course";
-import { syncWithDrive } from "./lib/driveSync";
+import { restoreProfileFromDrive, saveProfileToDrive } from "./lib/driveSync";
 import { speakGerman } from "./lib/speech";
 import { initVoices } from "./lib/speech";
-import { createDefaultProfile, getProfile, replaceProfile, saveProfile } from "./lib/storage";
+import { createDefaultProfile, getProfile, normalizeProfile, replaceProfile, saveProfile } from "./lib/storage";
 import type { Lesson, QuizQuestion, UserProfile } from "./types";
 
 type View = "dashboard" | "lesson" | "quiz" | "vocab" | "practice" | "sync";
+type SyncState = "unsynced" | "syncing" | "synced" | "issue";
 
 const builtinClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -459,25 +460,52 @@ function SyncView({
   setProfile: (profile: UserProfile) => void;
 }) {
   const [clientId, setClientId] = useState(profile.settings.googleClientId ?? builtinClientId ?? "");
-  const [status, setStatus] = useState("");
+  const [syncState, setSyncState] = useState<SyncState>(profile.settings.lastSyncedAt ? "synced" : "unsynced");
+  const [status, setStatus] = useState("Unsynced changes stay on this device until you save and sync.");
   const fileInput = useRef<HTMLInputElement | null>(null);
 
   async function saveClientId() {
     const next = { ...profile, settings: { ...profile.settings, googleClientId: clientId } };
     await saveProfile(next);
     setProfile(next);
+    setSyncState("unsynced");
     setStatus("Google client ID saved locally.");
   }
 
-  async function sync() {
+  async function saveAndSync() {
+    setSyncState("syncing");
     setStatus("Opening Google sign-in...");
     try {
-      const next = await syncWithDrive({ ...profile, settings: { ...profile.settings, googleClientId: clientId } }, clientId);
+      const next = await saveProfileToDrive({ ...profile, settings: { ...profile.settings, googleClientId: clientId } }, clientId);
       await replaceProfile(next);
       setProfile(next);
-      setStatus("Drive profile synced.");
+      setSyncState("synced");
+      setStatus("Synced to your hidden Google Drive app data file.");
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Drive sync failed.");
+      setSyncState("issue");
+      setStatus(error instanceof Error ? error.message : "Sync issue. Your local data is still safe on this device.");
+    }
+  }
+
+  async function restoreFromDrive() {
+    setSyncState("syncing");
+    setStatus("Opening Google sign-in...");
+    try {
+      const restored = await restoreProfileFromDrive(clientId);
+      const next = normalizeProfile({
+        ...restored,
+        settings: {
+          ...restored.settings,
+          googleClientId: clientId,
+        },
+      });
+      await replaceProfile(next);
+      setProfile(next);
+      setSyncState("synced");
+      setStatus("Restored from Drive. Local profile was replaced with the Drive copy.");
+    } catch (error) {
+      setSyncState("issue");
+      setStatus(error instanceof Error ? error.message : "Restore issue. Your local data was not changed.");
     }
   }
 
@@ -486,11 +514,17 @@ function SyncView({
   }
 
   async function importJson(file: File) {
-    const text = await file.text();
-    const next = JSON.parse(text) as UserProfile;
-    await replaceProfile(next);
-    setProfile(next);
-    setStatus("Profile imported.");
+    try {
+      const text = await file.text();
+      const next = normalizeProfile(JSON.parse(text));
+      await replaceProfile(next);
+      setProfile(next);
+      setSyncState("unsynced");
+      setStatus("Profile imported locally. Tap Save & Sync when you want to back it up.");
+    } catch {
+      setSyncState("issue");
+      setStatus("Import issue. That JSON file could not be used, and local data was not changed.");
+    }
   }
 
   function exportCalendar() {
@@ -522,15 +556,20 @@ function SyncView({
 
       <section className="panel">
         <h2>Drive setup</h2>
-        <p className="muted">Add your Google OAuth web client ID. On GitHub Pages, this can also come from the `VITE_GOOGLE_CLIENT_ID` repository secret.</p>
+        <p className="muted">Add your Google OAuth browser client ID. No client secret is used. On GitHub Pages, this can also come from the `VITE_GOOGLE_CLIENT_ID` repository secret.</p>
         <input value={clientId} onChange={(event) => setClientId(event.target.value)} placeholder="Google OAuth web client ID" />
         <div className="button-row">
           <button type="button" onClick={saveClientId}>Save ID</button>
-          <button className="primary" type="button" onClick={sync} disabled={!clientId}>
+          <button className="primary" type="button" onClick={saveAndSync} disabled={!clientId || syncState === "syncing"}>
             <Cloud size={18} />
-            Sync now
+            Save & Sync
+          </button>
+          <button type="button" onClick={restoreFromDrive} disabled={!clientId || syncState === "syncing"}>
+            <Download size={18} />
+            Restore from Drive
           </button>
         </div>
+        <p className={`sync-state ${syncState}`}>{syncState === "issue" ? "Sync issue" : syncState === "syncing" ? "Syncing" : syncState === "synced" ? "Synced" : "Unsynced"}</p>
         {status ? <p className="status">{status}</p> : null}
         <p className="muted">Last sync: {profile.settings.lastSyncedAt ? new Date(profile.settings.lastSyncedAt).toLocaleString() : "never"}</p>
       </section>

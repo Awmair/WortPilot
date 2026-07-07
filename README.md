@@ -53,6 +53,14 @@ https://www.googleapis.com/auth/drive.appdata
 
 Audio recordings stay local and are not synced.
 
+Sync is manual by design:
+
+- All edits save locally first.
+- Save & Sync uploads the latest local JSON to Drive.
+- Restore from Drive replaces local data with the Drive copy.
+- If sync fails, local data stays intact and can be retried later.
+- JSON export/import remains available as a fallback backup.
+
 ## Current Course State
 
 The app starts with the refresher quiz from the handoff, then continues to Module 2, Step 3: email sign-offs.

@@ -13,7 +13,7 @@ Status: in progress.
 - Vocabulary bank.
 - Talk-back recording.
 - Local profile storage.
-- Google Drive sync module.
+- Google Drive Save & Sync / Restore module.
 - JSON backup/import.
 - Calendar reminder export.
 - UI mockup review board.
@@ -27,7 +27,7 @@ Status: in progress.
 - Add review queue screen instead of mixing review into quiz.
 - Add settings controls for TTS rate and reminder hour.
 - Add offline status indicator.
-- Add visible Drive sync conflict/merge result.
+- Add clearer Drive save/restore confirmations and retry messaging.
 
 ## Curriculum Expansion
 
@@ -43,8 +43,8 @@ Status: in progress.
 
 - Rename storage keys from `german-pro-*` to `wortpilot-*` with migration.
 - Add profile schema migration utility.
-- Add Drive sync tests with mocked API.
-- Add import validation and error recovery.
+- Add Drive save/restore tests with mocked API.
+- Add profile normalization and import error recovery tests.
 - Add optional visible Drive export file.
 
 ## Later Features

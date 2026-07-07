@@ -51,7 +51,7 @@ Measured production React app checks:
 - [x] Writing coach has a defined flow.
 - [x] Talk-back has a defined flow.
 - [x] Reminders have a defined flow through in-app status and calendar export.
-- [x] Drive sync has a defined flow with appDataFolder.
+- [x] Drive sync has a defined manual Save & Sync / Restore from Drive flow with appDataFolder.
 - [x] Manual backup/restore has a defined flow.
 - [x] Offline PWA behavior has a defined deployment target.
 - [x] Settings have a defined place.
@@ -64,14 +64,15 @@ Measured production React app checks:
 - [x] PWA icon assets are committed.
 - [x] Service worker uses network-first fetch with cached fallback.
 - [x] Google Drive sync scope is limited to `drive.appdata`.
+- [x] Drive sync uses a browser OAuth client ID only and no client secrets.
+- [x] Failed Drive save/restore keeps local data intact by policy.
 - [x] Audio recordings remain local by policy.
 - [x] Docs capture product, UX, technical, content, brand, deployment, roadmap, and tasks.
 
 ## Remaining Before Public Release
 
 - [x] Apply Concept B styling to the actual React app screens, not only the mockup board.
-- [ ] Add automated tests for profile merge and screen rendering.
-- [ ] Add import validation for profile JSON.
+- [ ] Add automated tests for profile normalization, Drive save/restore failures, and screen rendering.
 - [ ] Add visible offline/cache status in the production app.
 - [ ] Configure Google OAuth and GitHub secret `VITE_GOOGLE_CLIENT_ID`.
 - [ ] Enable GitHub Pages with Actions source.

@@ -27,13 +27,13 @@
 
 - Rename IndexedDB/localStorage keys to WortPilot.
 - Add migration from old keys.
-- Validate imported JSON shape before replacing profile.
-- Add Drive sync status states: idle, signing in, merging, uploaded, failed.
+- Add a migration test for normalized older profile JSON.
+- Add Drive sync status states: Unsynced, Syncing, Synced, Sync issue.
 
 ## Testing
 
 - Add smoke tests for rendering all main screens.
-- Add unit tests for profile merge.
+- Add unit tests for profile normalization and Drive save/restore failure behavior.
 - Add checks for all German vocab items having phonetics.
 - Add a small script to verify service worker asset references exist.
 

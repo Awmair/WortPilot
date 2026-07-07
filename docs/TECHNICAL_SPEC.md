@@ -21,8 +21,8 @@ src/
   components/TextWithGermanAudio.tsx Known-term auto wrapper
   components/AudioRecorder.tsx    Talk-back recording flow
   lib/speech.ts                   Web Speech API helper
-  lib/storage.ts                  IndexedDB profile persistence and merge logic
-  lib/driveSync.ts                Google Drive appDataFolder sync
+  lib/storage.ts                  IndexedDB profile persistence, localStorage fallback, and normalization
+  lib/driveSync.ts                Google Drive appDataFolder backup/restore
   types.ts                        Shared data contracts
 public/
   manifest.webmanifest            PWA manifest
@@ -67,7 +67,10 @@ type UserProfile = {
 - IndexedDB database: `german-pro-db`
 - Store: `kv`
 - Key: `profile`
+- localStorage fallback key: `german-pro-profile`
 - Device ID stored in localStorage as `german-pro-device-id`
+- Every saved, imported, and restored profile is normalized before use so older JSON files do not crash the app.
+- All edits save locally first. If IndexedDB is unavailable, the app falls back to localStorage.
 
 Future cleanup should rename storage keys to `wortpilot-*` with a migration path.
 
@@ -98,23 +101,34 @@ Behavior:
 - Does not persist or sync audio in V1.
 - UI states: Record, Stop, Play mine, Delete, self-rating.
 
-## Google Drive Sync
+## Google Drive Backup And Restore
 
-Drive sync uses:
+Drive backup/restore uses:
 
 - Google Identity Services token client.
 - OAuth scope: `https://www.googleapis.com/auth/drive.appdata`
 - Hidden file name: `german-learning-profile.json`
 - Drive space: `appDataFolder`
+- Google browser OAuth client ID only. No client secrets, refresh tokens, private keys, `.env` files, or real user data belong in git.
 
-Sync sequence:
+Save & Sync sequence:
 
 1. Request OAuth token.
 2. Search `appDataFolder` for profile file.
-3. Download remote profile if present.
-4. Merge local and remote by latest timestamps.
-5. Upload merged profile.
-6. Save merged profile locally.
+3. Upload the latest local profile JSON to Drive.
+4. Save `lastSyncedAt` locally only after upload succeeds.
+
+Restore from Drive sequence:
+
+1. Request OAuth token.
+2. Search `appDataFolder` for profile file.
+3. Download the Drive profile JSON.
+4. Normalize it.
+5. Replace local data with the Drive copy only after download and normalization succeed.
+
+If Drive returns an expired-token style response, the app asks for sign-in again and retries once. If upload or restore fails, local data stays intact and the user can retry later.
+
+The app intentionally does not provide real-time multi-device merge/conflict handling in V1. The user must tap Save & Sync while online to back up local changes, and Restore from Drive is an explicit replace-local action.
 
 Recording files are intentionally excluded.
 
@@ -160,4 +174,3 @@ Set repository secret `VITE_GOOGLE_CLIENT_ID` if Drive sync should work without 
 - Profile screen shows Drive sync and backup controls.
 - PWA manifest references raster icons.
 - Service worker includes icon and app shell assets.
-

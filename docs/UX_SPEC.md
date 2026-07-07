@@ -62,9 +62,11 @@ Talk-back and writing coach can be surfaced as primary task cards on Home and as
 
 1. Open Profile.
 2. Enter or use configured Google OAuth client ID.
-3. Tap Sync now.
-4. App signs in with Google and uses Drive `appDataFolder`.
-5. Sync status updates with last synced time.
+3. Tap Save & Sync to upload the latest local profile JSON.
+4. Tap Restore from Drive only when replacing local data with the Drive copy.
+5. App signs in with Google and uses Drive `appDataFolder`.
+6. Sync status shows Unsynced, Syncing, Synced, or Sync issue.
+7. Sync issues keep local data intact and allow retry.
 
 ## Screen Requirements
 
@@ -100,6 +102,7 @@ Talk-back and writing coach can be surfaced as primary task cards on Home and as
 - Split into Sync, Backup, Reminder, and Settings groups.
 - Make it clear recordings do not sync.
 - Make Google Drive scope transparent.
+- Make Restore from Drive feel like an explicit replace-local action.
 
 ## Interaction Rules
 

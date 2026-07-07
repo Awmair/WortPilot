@@ -570,6 +570,35 @@ code {
   padding: 10px 12px;
 }
 
+.sync-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  margin: 14px 0 0;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.sync-state.unsynced,
+.sync-state.issue {
+  background: rgba(242, 207, 131, 0.18);
+  color: #9a6400;
+}
+
+.sync-state.syncing {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.sync-state.synced {
+  background: rgba(31, 140, 112, 0.12);
+  color: var(--green);
+}
+
 .search-box {
   display: flex;
   align-items: center;
@@ -1008,9 +1037,21 @@ code {
 .quiz-top span,
 .tags span,
 .explanation,
-.status {
+.status,
+.sync-state.syncing {
   background: var(--focus-blue-bg);
   color: var(--focus-blue);
+}
+
+.sync-state.unsynced,
+.sync-state.issue {
+  background: rgba(242, 207, 131, 0.16);
+  color: var(--focus-gold);
+}
+
+.sync-state.synced {
+  background: rgba(136, 226, 203, 0.12);
+  color: var(--focus-green);
 }
 
 .quiz-card.correct {
