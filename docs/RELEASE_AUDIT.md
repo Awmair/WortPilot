@@ -37,6 +37,8 @@ Measured production React app checks:
 - Vocabulary cards keep the German speak control active for learned and locked words.
 - Vocabulary data audit: 3,000 unique IDs, 3,000 unique German entries, 0 missing required fields.
 - Cleanup audit: stale `German Pro` user-facing text removed; storage now writes `wortpilot-*` keys while reading legacy `german-pro-*` keys for migration.
+- Event-handling audit: no direct per-render DOM button bindings; React delegated event handlers are used for app controls.
+- Service worker cache bumped to `wortpilot-v2` so installed PWAs refresh the changed JavaScript/CSS cache.
 
 ## Design Audit
 

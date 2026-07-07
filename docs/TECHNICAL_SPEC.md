@@ -89,6 +89,12 @@ Behavior:
 
 The auto-wrapper `TextWithGermanAudio` matches known vocabulary terms and wraps them with `SpeakableGerman`. New content should still prefer explicit `SpeakableGerman` in structured examples.
 
+## Event Handling
+
+- The production app uses React event handlers, which are delegated by React instead of manually rebinding DOM listeners after each screen render.
+- Do not add per-render `querySelector(...).addEventListener(...)` button wiring. If plain JavaScript screens are added later, use one stable delegated handler and `data-*` attributes.
+- Form/input flows should stay controlled through React state or a single stable delegated listener if a non-React surface is introduced.
+
 ## Talk-Back Recording
 
 Component: `AudioRecorder`

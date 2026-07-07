@@ -1,4 +1,4 @@
-const CACHE_NAME = "wortpilot-v1";
+const CACHE_NAME = "wortpilot-v2";
 const ASSETS = [
   "./",
   "./index.html",
