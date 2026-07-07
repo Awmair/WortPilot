@@ -2,6 +2,19 @@
 
 A zero-cost German learning PWA for iPhone, built for business/email/chat German for AI freelance work.
 
+## Project Docs
+
+- Product spec: `docs/PRODUCT_SPEC.md`
+- UX spec: `docs/UX_SPEC.md`
+- Technical spec: `docs/TECHNICAL_SPEC.md`
+- Content spec: `docs/CONTENT_SPEC.md`
+- Brand/assets: `docs/BRAND_AND_ASSETS.md`
+- Deployment: `docs/DEPLOYMENT.md`
+- Roadmap: `docs/ROADMAP.md`
+- Tasks: `docs/TASKS.md`
+- Agent handoff: `CODEX.md`
+- UI mockup board: `design-mockups/index.html`
+
 ## Run Locally
 
 ```bash
