@@ -48,6 +48,12 @@ input {
   font: inherit;
 }
 
+button,
+a,
+[role="button"] {
+  touch-action: manipulation;
+}
+
 button {
   min-height: 44px;
   border: 1px solid var(--line);

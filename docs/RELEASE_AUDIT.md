@@ -39,6 +39,7 @@ Measured production React app checks:
 - Cleanup audit: stale `German Pro` user-facing text removed; storage now writes `wortpilot-*` keys while reading legacy `german-pro-*` keys for migration.
 - Event-handling audit: no direct per-render DOM button bindings; React delegated event handlers are used for app controls.
 - Service worker cache bumped to `wortpilot-v2` so installed PWAs refresh the changed JavaScript/CSS cache.
+- iPhone tap audit: viewport uses `viewport-fit=cover`; tappable controls use `touch-action: manipulation` to avoid double-tap delay/zoom on controls.
 
 ## Design Audit
 
