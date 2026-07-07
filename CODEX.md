@@ -17,6 +17,7 @@ Authoritative docs:
 - `docs/TECHNICAL_SPEC.md`
 - `docs/CONTENT_SPEC.md`
 - `docs/BRAND_AND_ASSETS.md`
+- `docs/RELEASE_AUDIT.md`
 - `docs/DEPLOYMENT.md`
 - `docs/ROADMAP.md`
 - `docs/TASKS.md`
@@ -27,7 +28,7 @@ UI mockup board:
 
 ## Current Direction
 
-Use `Concept A: Pilot Console` from the mockup board as the production UI direction.
+Use `Concept B: Deep Focus` from the mockup board as the production UI direction.
 
 The current app already includes:
 
@@ -63,4 +64,3 @@ npx vite preview --host 127.0.0.1 --port 5180
 - Check `git status --short`.
 - Do not commit `node_modules` or `dist`.
 - Keep docs in sync when changing feature scope, storage shape, or deployment behavior.
-

@@ -9,6 +9,7 @@ A zero-cost German learning PWA for iPhone, built for business/email/chat German
 - Technical spec: `docs/TECHNICAL_SPEC.md`
 - Content spec: `docs/CONTENT_SPEC.md`
 - Brand/assets: `docs/BRAND_AND_ASSETS.md`
+- Release audit: `docs/RELEASE_AUDIT.md`
 - Deployment: `docs/DEPLOYMENT.md`
 - Roadmap: `docs/ROADMAP.md`
 - Tasks: `docs/TASKS.md`

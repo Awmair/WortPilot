@@ -20,7 +20,7 @@ Status: in progress.
 
 ## V1 Polish
 
-- Apply Concept A UI direction fully to production app.
+- Apply Concept B UI direction fully to production app.
 - Move route/view logic into smaller screen components.
 - Improve mobile bottom navigation labels and accessibility.
 - Add writing coach screen.
@@ -64,4 +64,3 @@ Status: in progress.
 - No paid dependency or required paid API.
 - All German content must remain tappable/speakable.
 - iPhone viewport must avoid horizontal overflow.
-

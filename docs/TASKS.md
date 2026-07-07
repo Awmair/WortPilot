@@ -5,11 +5,11 @@
 - Connect GitHub remote and push local commits.
 - Enable GitHub Pages with Actions source.
 - Add `VITE_GOOGLE_CLIENT_ID` secret after Google OAuth setup.
-- Review `design-mockups/index.html` and choose production UI direction.
+- Use the audited Concept B direction from `design-mockups/index.html` as the production UI direction.
 
 ## Production UI
 
-- Convert dashboard to Concept A layout.
+- Convert dashboard to Concept B layout.
 - Add bottom navigation labels for mobile clarity.
 - Add writing coach view.
 - Add review queue view.
@@ -43,4 +43,3 @@
 - Add GitHub Pages URL to README.
 - Add Google OAuth setup screenshots if needed.
 - Add iPhone install walkthrough.
-

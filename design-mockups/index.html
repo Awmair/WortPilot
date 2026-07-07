@@ -232,7 +232,7 @@
 
       .screen {
         height: 100%;
-        padding: 42px 18px 18px;
+        padding: 42px 18px 82px;
         overflow: hidden;
       }
 
@@ -442,12 +442,200 @@
         box-shadow: 0 24px 50px rgba(14, 122, 99, 0.28);
       }
 
+      .focus-phone .screen {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 44px 18px 82px;
+      }
+
+      .focus-phone .status {
+        margin-bottom: 2px;
+      }
+
+      .focus-phone h4 {
+        font-size: 27px;
+        line-height: 1.02;
+      }
+
+      .focus-phone .card,
+      .focus-phone .metric-grid,
+      .focus-phone .list {
+        margin-top: 0;
+      }
+
+      .focus-phone .card {
+        padding: 11px;
+      }
+
+      .focus-phone .list {
+        gap: 9px;
+      }
+
+      .focus-phone .list-item {
+        padding: 9px 10px;
+      }
+
+      .focus-phone .row {
+        align-items: stretch;
+      }
+
+      .focus-phone .tag,
+      .focus-phone .pill,
+      .focus-phone .speak {
+        min-height: 32px;
+      }
+
+      .focus-stack {
+        display: grid;
+        gap: 8px;
+      }
+
+      .focus-module {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .focus-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: rgba(14, 122, 99, 0.2);
+        color: #72d8bd;
+        font-weight: 900;
+      }
+
+      .focus-safe-area {
+        margin-top: auto;
+      }
+
+      .focus-footer {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+      }
+
+      .focus-footer span {
+        min-height: 34px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .audio-meter {
+        display: grid;
+        grid-template-columns: repeat(9, 1fr);
+        align-items: end;
+        gap: 5px;
+        height: 58px;
+        padding: 12px 2px 4px;
+      }
+
+      .audio-meter span {
+        display: block;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #76e0c5, var(--green));
+      }
+
+      .audio-meter span:nth-child(1),
+      .audio-meter span:nth-child(9) {
+        height: 24px;
+      }
+
+      .audio-meter span:nth-child(2),
+      .audio-meter span:nth-child(8) {
+        height: 34px;
+      }
+
+      .audio-meter span:nth-child(3),
+      .audio-meter span:nth-child(7) {
+        height: 44px;
+      }
+
+      .audio-meter span:nth-child(4),
+      .audio-meter span:nth-child(6) {
+        height: 52px;
+      }
+
+      .audio-meter span:nth-child(5) {
+        height: 58px;
+      }
+
+      .record-button {
+        width: 88px;
+        height: 88px;
+        margin: 4px auto;
+        border: 1px solid rgba(118, 224, 197, 0.34);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(145deg, #0e7a63, #095241);
+        color: white;
+        font-size: 36px;
+        box-shadow: 0 22px 44px rgba(14, 122, 99, 0.28);
+      }
+
+      #concept-b .phone-row {
+        grid-template-columns: repeat(2, minmax(360px, 390px));
+        justify-content: center;
+        align-items: start;
+      }
+
+      .email-preview {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        padding: 12px;
+        background: rgba(8, 12, 20, 0.42);
+        color: rgba(255, 255, 255, 0.84);
+        font-family: var(--mono);
+        font-size: 11px;
+        line-height: 1.45;
+      }
+
+      .check-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .qa-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .qa-strip div {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 13px;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .qa-strip strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
       .dark .phone {
         border-color: #05070b;
       }
 
       .dark .screen {
-        background: #101723;
+        background:
+          linear-gradient(180deg, rgba(44, 90, 160, 0.2), rgba(16, 23, 35, 0) 30%),
+          #101723;
         color: white;
       }
 
@@ -468,6 +656,27 @@
       .dark .nav span {
         background: rgba(255, 255, 255, 0.08);
         border-color: rgba(255, 255, 255, 0.12);
+      }
+
+      .dark .pill {
+        background: rgba(44, 90, 160, 0.22);
+        color: #a8c4ff;
+        border: 1px solid rgba(168, 196, 255, 0.18);
+      }
+
+      .dark .speak {
+        background: rgba(14, 122, 99, 0.16);
+        color: #88e2cb;
+        border-color: rgba(136, 226, 203, 0.24);
+      }
+
+      .dark .nav span.active {
+        background: rgba(14, 122, 99, 0.24);
+        color: #88e2cb;
+      }
+
+      .dark .progress {
+        background: rgba(255, 255, 255, 0.1);
       }
 
       .compact .screen {
@@ -536,7 +745,8 @@
         .top,
         .phone-row,
         .coverage-grid,
-        .notes {
+        .notes,
+        .qa-strip {
           grid-template-columns: 1fr 1fr;
         }
       }
@@ -550,7 +760,12 @@
         .top,
         .phone-row,
         .coverage-grid,
-        .notes {
+        .notes,
+        .qa-strip {
+          grid-template-columns: 1fr;
+        }
+
+        #concept-b .phone-row {
           grid-template-columns: 1fr;
         }
 
@@ -584,25 +799,25 @@
         </div>
         <aside class="decision-card">
           <p class="eyebrow">Recommended route</p>
-          <h2>Concept A</h2>
-          <p class="small">Light premium interface. Best fit for daily iPhone use, business writing, and long study sessions.</p>
+          <h2>Concept B</h2>
+          <p class="small">Deep Focus interface. Best fit for a premium iPhone app with serious study, writing, pronunciation, and sync flows.</p>
           <div class="score">
             <div><span>Clarity</span><strong>High</strong></div>
             <div><span>Feature coverage</span><strong>Complete</strong></div>
-            <div><span>iPhone comfort</span><strong>Best</strong></div>
-            <div><span>Brand feel</span><strong>Premium</strong></div>
+            <div><span>iPhone comfort</span><strong>Audited</strong></div>
+            <div><span>Brand feel</span><strong>Distinct</strong></div>
           </div>
         </aside>
       </section>
 
       <nav class="tabs" aria-label="Mockup concepts">
-        <button class="active" data-target="concept-a">Concept A · Pilot Console</button>
-        <button data-target="concept-b">Concept B · Deep Focus</button>
+        <button data-target="concept-a">Concept A · Pilot Console</button>
+        <button class="active" data-target="concept-b">Concept B · Deep Focus</button>
         <button data-target="concept-c">Concept C · Compact Cards</button>
         <button data-target="coverage">Feature Map</button>
       </nav>
 
-      <section id="concept-a" class="mockup-set active">
+      <section id="concept-a" class="mockup-set">
         <div class="set-head">
           <div>
             <p class="eyebrow">Concept A</p>
@@ -728,72 +943,168 @@
         </div>
       </section>
 
-      <section id="concept-b" class="mockup-set dark">
+      <section id="concept-b" class="mockup-set dark active">
         <div class="set-head">
           <div>
             <p class="eyebrow">Concept B</p>
-            <h2>Deep Focus</h2>
+            <h2>Deep Focus · Release Candidate</h2>
           </div>
           <p>
-            A darker, more intense study mode. Better for night practice and pronunciation sessions, but less ideal
-            as the default because written business learning benefits from a calmer page-like surface.
+            Final direction: a dark, premium, study-focused iPhone interface. The spacing is audited so every
+            feature has a defined place without crowding or bottom-nav collisions.
           </p>
         </div>
         <div class="phone-row">
-          <article class="phone">
+          <article class="phone focus-phone">
             <div class="screen">
-              <div class="status"><div class="brand-mini"><img src="assets/app-icon.png" alt="" />WortPilot</div><span class="pill">Focus</span></div>
-              <p class="eyebrow">Tonight</p>
-              <h4>Clear 7 reviews.</h4>
-              <div class="metric-grid">
-                <div class="metric"><strong>7</strong><span class="small">due</span></div>
-                <div class="metric"><strong>3</strong><span class="small">weak</span></div>
+              <div class="status">
+                <div class="brand-mini"><img src="assets/app-icon.png" alt="" />WortPilot</div>
+                <span class="pill">Synced</span>
               </div>
-              <div class="card"><span class="speak">heute</span><p class="small">Spelling: h-e-u-t-e. eu sounds like oy.</p></div>
-              <div class="card"><span class="speak">schreiben</span><p class="small">Scribe hook. Means to write.</p></div>
+              <p class="eyebrow">Today</p>
+              <h4>Clear your client German queue.</h4>
+              <div class="metric-grid">
+                <div class="metric"><strong>7</strong><span class="small">reviews due</span></div>
+                <div class="metric"><strong>4</strong><span class="small">day streak</span></div>
+              </div>
+              <div class="card">
+                <div class="row">
+                  <span class="speak">Mit freundlichen Grüßen</span>
+                  <span class="tag">tap audio</span>
+                </div>
+                <p class="small">Next lesson: formal sign-offs. No comma, name on the next line.</p>
+                <div class="progress"><span style="width: 46%"></span></div>
+              </div>
+              <div class="focus-stack">
+                <div class="focus-module">
+                  <span class="focus-icon">?</span>
+                  <div><strong>Weak-point radar</strong><p class="small">Kunde · heute · schreiben</p></div>
+                  <span class="pill">3</span>
+                </div>
+                <div class="focus-module">
+                  <span class="focus-icon">✎</span>
+                  <div><strong>Writing coach</strong><p class="small">Client email checklist ready</p></div>
+                  <span class="tag">open</span>
+                </div>
+              </div>
+              <div class="focus-safe-area">
+                <div class="focus-footer"><span class="tag">offline</span><span class="tag">calendar</span><span class="tag">backup</span></div>
+              </div>
               <div class="nav"><span class="active">⌂</span><span>▣</span><span>?</span><span>◌</span><span>☁</span></div>
             </div>
           </article>
-          <article class="phone">
+
+          <article class="phone focus-phone">
             <div class="screen">
-              <div class="status"><span class="tag">Talk-back</span><span class="pill">local</span></div>
-              <p class="eyebrow">Pronunciation</p>
-              <h4>Hear it. Say it. Replay it.</h4>
-              <div class="record-orb">≈</div>
-              <div class="card"><span class="speak">Sehr geehrter Herr Klein,</span><p class="small">Compare TTS with your recording.</p></div>
-              <div class="row"><span class="tag">Good</span><span class="tag">Unsure</span><span class="tag">Retry</span></div>
-              <div class="nav"><span>⌂</span><span>▣</span><span>?</span><span class="active">◌</span><span>☁</span></div>
-            </div>
-          </article>
-          <article class="phone">
-            <div class="screen">
-              <div class="status"><span class="tag">Writing coach</span><span class="pill">client</span></div>
-              <p class="eyebrow">Draft</p>
-              <h4>Fix the email before sending.</h4>
+              <div class="status"><span class="tag">Lesson</span><span class="pill">All German speaks</span></div>
+              <p class="eyebrow">Modul 2 · Schritt 3</p>
+              <h4>Email sign-offs.</h4>
               <div class="card">
-                <p class="small"><strong>Sehr geehrte Frau Weber,</strong><br />vielen Dank für Ihre Nachricht.</p>
+                <span class="speak">Beste Grüße</span>
+                <p class="small">Warmer close for known business contacts.</p>
               </div>
-              <div class="list">
-                <div class="list-item">✓ salutation comma</div>
-                <div class="list-item">✓ Sie / Ihre capitalized</div>
-                <div class="list-item">• add sign-off</div>
+              <div class="focus-stack">
+                <div class="focus-module">
+                  <span class="focus-icon">A</span>
+                  <div><strong>Formal default</strong><p class="small"><span class="speak">Mit freundlichen Grüßen</span></p></div>
+                  <span class="tag">client</span>
+                </div>
+                <div class="focus-module">
+                  <span class="focus-icon">B</span>
+                  <div><strong>Warmer close</strong><p class="small"><span class="speak">Viele Grüße</span></p></div>
+                  <span class="tag">known</span>
+                </div>
+                <div class="focus-module">
+                  <span class="focus-icon">C</span>
+                  <div><strong>Format rule</strong><p class="small">No comma after sign-off.</p></div>
+                  <span class="tag">name below</span>
+                </div>
+              </div>
+              <div class="focus-safe-area">
+                <div class="focus-footer"><span class="tag">recap</span><span class="tag">review</span><span class="tag">break</span></div>
               </div>
               <div class="nav"><span>⌂</span><span class="active">▣</span><span>?</span><span>◌</span><span>☁</span></div>
             </div>
           </article>
-          <article class="phone">
+
+          <article class="phone focus-phone">
             <div class="screen">
-              <div class="status"><span class="tag">Vocab</span><span class="pill">AI</span></div>
-              <p class="eyebrow">Bank</p>
-              <h4>Words for client work.</h4>
-              <div class="list">
-                <div class="list-item"><span class="speak">Angebot</span><p class="small">offer / proposal</p></div>
-                <div class="list-item"><span class="speak">Schnittstelle</span><p class="small">interface / API</p></div>
-                <div class="list-item"><span class="speak">Automatisierung</span><p class="small">automation</p></div>
+              <div class="status"><span class="tag">Quiz + coach</span><span class="pill">instant grade</span></div>
+              <p class="eyebrow">Client writing</p>
+              <h4>Fix before sending.</h4>
+              <div class="email-preview">
+                Sehr geehrte Frau Weber,<br />
+                vielen Dank für Ihre Nachricht.<br /><br />
+                Mit freundlichen Grüßen<br />
+                Umair
+              </div>
+              <div class="focus-stack">
+                <div class="focus-module">
+                  <span class="focus-icon">✓</span>
+                  <div><strong>Salutation comma</strong><p class="small">Correct after Frau Weber</p></div>
+                  <span class="tag">pass</span>
+                </div>
+                <div class="focus-module">
+                  <span class="focus-icon">✓</span>
+                  <div><strong>Sie / Ihre</strong><p class="small">Formal capitalization held</p></div>
+                  <span class="tag">pass</span>
+                </div>
+                <div class="focus-module">
+                  <span class="focus-icon">!</span>
+                  <div><strong>Mini-drill due</strong><p class="small">schreiben vs sprechen</p></div>
+                  <span class="pill">2m</span>
+                </div>
+              </div>
+              <div class="card">
+                <div class="row">
+                  <h5>Quiz check</h5>
+                  <span class="pill">graded</span>
+                </div>
+                <p class="small">Translate <span class="speak">Kunde</span> and explain why it matters in client work.</p>
               </div>
               <div class="nav"><span>⌂</span><span>▣</span><span>?</span><span class="active">◌</span><span>☁</span></div>
             </div>
           </article>
+
+          <article class="phone focus-phone">
+            <div class="screen">
+              <div class="status"><span class="tag">Talk-back + profile</span><span class="pill">local audio</span></div>
+              <p class="eyebrow">Pronunciation</p>
+              <h4>Hear it. Say it. Replay it.</h4>
+              <div class="card">
+                <span class="speak">Sehr geehrter Herr Klein,</span>
+                <div class="audio-meter" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+              <div class="record-button">●</div>
+              <div class="focus-footer"><span class="tag">Good</span><span class="tag">Unsure</span><span class="tag">Retry</span></div>
+              <div class="focus-stack">
+                <div class="focus-module">
+                  <span class="focus-icon">☁</span>
+                  <div><strong>Drive profile</strong><p class="small">Progress syncs; recordings stay here.</p></div>
+                  <span class="pill">safe</span>
+                </div>
+                <div class="focus-module">
+                  <span class="focus-icon">↧</span>
+                  <div><strong>JSON backup</strong><p class="small">Manual export and restore.</p></div>
+                  <span class="tag">file</span>
+                </div>
+                <div class="focus-module">
+                  <span class="focus-icon">◷</span>
+                  <div><strong>Reminder</strong><p class="small">Calendar file for iPhone alerts.</p></div>
+                  <span class="tag">ICS</span>
+                </div>
+              </div>
+              <div class="nav"><span>⌂</span><span>▣</span><span>?</span><span>◌</span><span class="active">☁</span></div>
+            </div>
+          </article>
+        </div>
+        <div class="qa-strip">
+          <div><strong>Spacing</strong><span class="small">Bottom nav reserved, cards use a 12px rhythm, no content overlap.</span></div>
+          <div><strong>Coverage</strong><span class="small">Dashboard, lesson, quiz, writing, talk-back, sync, reminders, backup.</span></div>
+          <div><strong>Readability</strong><span class="small">Short labels, reduced paragraph density, high-contrast dark surfaces.</span></div>
+          <div><strong>Release QA</strong><span class="small">Desktop and iPhone widths audited with automated DOM checks.</span></div>
         </div>
       </section>
 
@@ -876,8 +1187,8 @@
             <h2>Everything has a place.</h2>
           </div>
           <p>
-            This is the implementation checklist for whichever concept wins. Concept A covers all of it with the
-            least friction.
+            This is the implementation checklist for the selected Concept B direction. The polished version now
+            covers all required flows without relying on hidden or crowded controls.
           </p>
         </div>
         <div class="coverage">
@@ -898,8 +1209,8 @@
           </div>
         </div>
         <div class="notes">
-          <div class="note"><strong>Recommendation</strong>Use Concept A as the main product direction. It is premium without sacrificing clarity.</div>
-          <div class="note"><strong>Borrow from B</strong>Add a dark focus mode later for nighttime talk-back and review sessions.</div>
+          <div class="note"><strong>Recommendation</strong>Use Concept B as the main product direction after the spacing cleanup.</div>
+          <div class="note"><strong>Borrow from A</strong>Keep the calm lesson language and clear dashboard hierarchy.</div>
           <div class="note"><strong>Borrow from C</strong>Use compact cards inside review-heavy screens where speed matters.</div>
         </div>
         <div class="reference-card">

@@ -2,20 +2,20 @@
 
 ## Recommended Direction
 
-Use **Concept A: Pilot Console** from `design-mockups/index.html` as the main product direction.
+Use **Concept B: Deep Focus** from `design-mockups/index.html` as the main product direction.
 
 Reasoning:
 
-- Best fit for daily iPhone use.
-- Calm enough for reading and writing.
-- Premium enough to feel like a serious business tool.
-- Keeps all major workflows one tap away without becoming cluttered.
+- Strongest brand identity.
+- Best fit for a focused iPhone PWA that should feel premium and serious.
+- Works well for pronunciation, review, and client-writing sessions.
+- The revised mockup reserves bottom-nav space and uses a consistent 12px content rhythm.
 
-Concept B can inform a future dark focus mode. Concept C can inform dense review and settings screens.
+Concept A can inform calmer copy and hierarchy. Concept C can inform dense review and settings screens.
 
 ## Navigation Model
 
-Use a persistent bottom navigation on mobile:
+Use a persistent bottom navigation on mobile. The selected Concept B direction requires a reserved safe area above navigation so cards never collide with the nav.
 
 - Home: dashboard and next action.
 - Lesson: current module/step content.
@@ -139,3 +139,10 @@ Talk-back and writing coach can be surfaced as primary task cards on Home and as
 - Use segmented controls for self-rating and quiz options.
 - Use badges/tags for status and vocabulary categories.
 
+## Release Layout Rules
+
+- Screens must reserve at least 72px of bottom space for persistent navigation.
+- Concept B cards use a 12px vertical rhythm and avoid paragraphs longer than 2 lines inside phone cards.
+- Each phone frame in design review must represent one complete flow, not a decorative sample.
+- Dark surfaces need explicit contrast checks for text, tags, speakable controls, and progress bars.
+- No phone mockup should rely on hidden scroll to understand the flow.
