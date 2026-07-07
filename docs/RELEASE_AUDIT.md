@@ -32,6 +32,8 @@ Measured production React app checks:
 - iPhone-width app: dashboard study card clears bottom nav by 13px in first viewport.
 - iPhone-width app: study-card duplicate metric grid is hidden; stats remain available below.
 - Main screens render without horizontal overflow: Lesson, Quiz, Vocab, Speak, Sync.
+- Vocabulary bank contains 527 entries with All / Learned / Locked filters.
+- Vocabulary cards keep the German speak control active for learned and locked words.
 
 ## Design Audit
 
@@ -54,6 +56,7 @@ Measured production React app checks:
 - [x] Universal German pronunciation has a defined component.
 - [x] Quiz/review has a defined flow.
 - [x] Vocabulary bank has a defined flow.
+- [x] Vocabulary bank supports progressive All / Learned / Locked filtering.
 - [x] Writing coach has a defined flow.
 - [x] Talk-back has a defined flow.
 - [x] Reminders have a defined flow through in-app status and calendar export.

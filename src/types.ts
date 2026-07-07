@@ -10,6 +10,7 @@ export type VocabItem = GermanText & {
   ascii?: string;
   tags: string[];
   weak?: boolean;
+  unlockStage?: number;
 };
 
 export type QuizQuestion = {

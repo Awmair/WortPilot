@@ -26,10 +26,11 @@ import { restoreProfileFromDrive, saveProfileToDrive } from "./lib/driveSync";
 import { speakGerman } from "./lib/speech";
 import { initVoices } from "./lib/speech";
 import { createDefaultProfile, getProfile, normalizeProfile, replaceProfile, saveProfile } from "./lib/storage";
-import type { Lesson, QuizQuestion, UserProfile } from "./types";
+import type { Lesson, QuizQuestion, UserProfile, VocabItem } from "./types";
 
 type View = "dashboard" | "lesson" | "quiz" | "vocab" | "practice" | "sync";
 type SyncState = "unsynced" | "syncing" | "synced" | "issue";
+type VocabFilter = "all" | "learned" | "locked";
 
 const builtinClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -44,6 +45,22 @@ function now() {
 function isCorrect(question: QuizQuestion, answer: string) {
   const clean = normalize(answer);
   return question.acceptable.some((accepted) => clean === normalize(accepted) || clean.includes(normalize(accepted)));
+}
+
+function learnedVocabLimit(profile: UserProfile) {
+  const starterCount = vocabulary.filter((item) => (item.unlockStage ?? 0) === 0).length;
+  const correctAnswers = profile.quizHistory.filter((item) => item.correct).length;
+  return Math.min(
+    vocabulary.length,
+    starterCount +
+      profile.courseProgress.completedLessonIds.length * 90 +
+      correctAnswers * 12 +
+      profile.courseProgress.streak * 5,
+  );
+}
+
+function isVocabLearned(item: VocabItem, index: number, learnedLimit: number) {
+  return (item.unlockStage ?? 0) === 0 || index < learnedLimit;
 }
 
 function downloadFile(name: string, content: string, type: string) {
@@ -197,7 +214,7 @@ function Dashboard({
         <button className="tile" type="button" onClick={() => setView("vocab")}>
           <ArrowDownAZ />
           <span>Vocabulary bank</span>
-          <small>{vocabulary.length} business-focused terms</small>
+          <small>{vocabulary.length} total words</small>
         </button>
         <button className="tile featured" type="button" onClick={() => setView("lesson")}>
           <FileText />
@@ -403,28 +420,62 @@ function QuizView({
 
 function VocabView({ profile }: { profile: UserProfile }) {
   const [query, setQuery] = useState("");
-  const filtered = vocabulary.filter((item) => {
-    const haystack = `${item.de} ${item.ascii ?? ""} ${item.en ?? ""} ${item.tags.join(" ")}`.toLowerCase();
-    return haystack.includes(query.toLowerCase());
-  });
+  const [filter, setFilter] = useState<VocabFilter>("learned");
+  const learnedLimit = learnedVocabLimit(profile);
+  const vocabWithState = vocabulary.map((item, index) => ({
+    item,
+    learned: isVocabLearned(item, index, learnedLimit),
+  }));
+  const learnedCount = vocabWithState.filter(({ learned }) => learned).length;
+  const lockedCount = vocabulary.length - learnedCount;
+  const filtered = vocabWithState
+    .filter(({ learned }) => filter === "all" || (filter === "learned" ? learned : !learned))
+    .filter(({ item }) => {
+      const haystack = `${item.de} ${item.ascii ?? ""} ${item.en ?? ""} ${item.tags.join(" ")}`.toLowerCase();
+      return haystack.includes(query.toLowerCase());
+    });
 
   return (
     <main className="screen">
       <section className="page-title">
         <p className="eyebrow">Banked words</p>
         <h1>Vocabulary</h1>
-        <p className="lead">Business, tech, AI, sales, email, and weak-point words. Every German item speaks.</p>
+        <p className="lead">General, lifestyle, internet, tech, AI, business, email, and weak-point words. Every German item speaks.</p>
       </section>
-      <label className="search-box">
-        <Search size={18} />
-        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search German, English, or tag" />
-      </label>
+      <div className="vocab-toolbar">
+        <div className="segmented vocab-filter" aria-label="Vocabulary filter">
+          {[
+            ["all", `All ${vocabulary.length}`],
+            ["learned", `Learned ${learnedCount}`],
+            ["locked", `Locked ${lockedCount}`],
+          ].map(([name, label]) => (
+            <button
+              className={filter === name ? "active" : ""}
+              key={name}
+              type="button"
+              onClick={() => setFilter(name as VocabFilter)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <label className="search-box">
+          <Search size={18} />
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search German, English, or tag" />
+        </label>
+      </div>
       <section className="vocab-list">
-        {filtered.map((item) => (
-          <article className={`vocab-card ${item.weak ? "weak" : ""}`} key={item.id}>
-            <SpeakableGerman text={item.de} phonetic={item.phonetic} ascii={item.ascii} rate={profile.settings.ttsRate} block />
+        {filtered.map(({ item, learned }) => (
+          <article className={`vocab-card ${item.weak ? "weak" : ""} ${learned ? "" : "locked"}`} key={item.id}>
+            <div className="vocab-card-top">
+              <SpeakableGerman text={item.de} phonetic={item.phonetic} ascii={item.ascii} rate={profile.settings.ttsRate} block />
+              <span className={`vocab-state ${learned ? "learned" : "locked"}`}>{learned ? "Learned" : "Locked"}</span>
+            </div>
             <p>{item.en}</p>
-            <div className="tags">{item.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+            <div className="tags">
+              {item.tags.map((tag) => <span key={tag}>{tag}</span>)}
+              {!learned ? <span>unlocks later</span> : null}
+            </div>
           </article>
         ))}
       </section>

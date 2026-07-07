@@ -49,12 +49,17 @@ Prioritize these in review and mini-drills:
 
 Every module should include at least some vocabulary from:
 
+- General core words.
+- Lifestyle and everyday things.
+- Internet and device vocabulary.
 - Email/chat.
 - Business.
 - Tech.
 - AI.
 - Sales/agency.
 - Grammar/function words.
+
+The production vocabulary bank starts with 500+ entries. Starter words are learned immediately; later words are locked into progressive stages but remain visible and tappable for pronunciation previews.
 
 ## Lesson Format
 
@@ -110,4 +115,3 @@ Known free resources:
 - DW slow news and DW Marktplatz.
 - dict.cc, LEO, Wiktionary.
 - Forvo for native pronunciation.
-
