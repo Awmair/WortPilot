@@ -1,0 +1,647 @@
+import {
+  Bell,
+  BookOpen,
+  CheckCircle2,
+  Cloud,
+  Download,
+  FileText,
+  Flame,
+  GraduationCap,
+  Headphones,
+  Home,
+  MessageCircle,
+  RotateCcw,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Upload,
+} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AudioRecorder } from "./components/AudioRecorder";
+import { SpeakableGerman } from "./components/SpeakableGerman";
+import { TextWithGermanAudio } from "./components/TextWithGermanAudio";
+import { lessons, quizQuestions, vocabulary } from "./data/course";
+import { syncWithDrive } from "./lib/driveSync";
+import { speakGerman } from "./lib/speech";
+import { initVoices } from "./lib/speech";
+import { createDefaultProfile, getProfile, replaceProfile, saveProfile } from "./lib/storage";
+import type { Lesson, QuizQuestion, UserProfile } from "./types";
+
+type View = "dashboard" | "lesson" | "quiz" | "vocab" | "practice" | "sync";
+
+const builtinClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+function normalize(answer: string) {
+  return answer.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function now() {
+  return new Date().toISOString();
+}
+
+function isCorrect(question: QuizQuestion, answer: string) {
+  const clean = normalize(answer);
+  return question.acceptable.some((accepted) => clean === normalize(accepted) || clean.includes(normalize(accepted)));
+}
+
+function downloadFile(name: string, content: string, type: string) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function Stat({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="stat">
+      <strong>{value}</strong>
+      <span>{label}</span>
+    </div>
+  );
+}
+
+function GermanList({ items, rate }: { items: { de: string; phonetic?: string; ascii?: string; en?: string }[]; rate: number }) {
+  return (
+    <div className="example-grid">
+      {items.map((item) => (
+        <div className="example" key={`${item.de}-${item.en}`}>
+          <SpeakableGerman text={item.de} phonetic={item.phonetic} ascii={item.ascii} rate={rate} block />
+          {item.en ? <p>{item.en}</p> : null}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SmartText({ text, rate }: { text: string; rate: number }) {
+  return <TextWithGermanAudio text={text} rate={rate} />;
+}
+
+function Dashboard({
+  profile,
+  setView,
+  currentLesson,
+}: {
+  profile: UserProfile;
+  setView: (view: View) => void;
+  currentLesson: Lesson;
+}) {
+  const dueReviews = profile.reviewQueue.filter((item) => new Date(item.dueAt) <= new Date()).length;
+  const correctAnswers = profile.quizHistory.filter((item) => item.correct).length;
+  const lastSynced = profile.settings.lastSyncedAt ? new Date(profile.settings.lastSyncedAt).toLocaleString() : "Not synced";
+  const quizPercent = Math.round((profile.quizHistory.length / quizQuestions.length) * 100);
+
+  return (
+    <main className="screen">
+      <section className="hero">
+        <div className="hero-copy">
+          <div className="app-mark-row">
+            <img src={`${import.meta.env.BASE_URL}app-icon.png`} alt="" className="app-icon" />
+            <div>
+              <p className="eyebrow">WortPilot</p>
+              <p className="muted compact">Business German for AI freelancers</p>
+            </div>
+          </div>
+          <h1>Write German client messages with confidence.</h1>
+          <p className="lead">One focused PWA for email German, business vocabulary, tap-to-hear pronunciation, talk-back practice, and Drive-backed progress.</p>
+          <div className="hero-actions">
+            <button className="primary" type="button" onClick={() => setView("lesson")}>
+              <BookOpen size={18} />
+              Continue lesson
+            </button>
+            <button type="button" onClick={() => setView("practice")}>
+              <Headphones size={18} />
+              Speak back
+            </button>
+          </div>
+        </div>
+
+        <aside className="study-card" aria-label="Today's study card">
+          <div className="study-card-top">
+            <div>
+              <p className="eyebrow">Today</p>
+              <h2>{currentLesson.title}</h2>
+            </div>
+            <span className="sync-pill">
+              <Cloud size={14} />
+              Drive
+            </span>
+          </div>
+          <SpeakableGerman text="Mit freundlichen Grüßen" phonetic="mit FROYND-likh-en GRUE-sen" ascii="Mit freundlichen Gruessen" rate={profile.settings.ttsRate} block />
+          <div className="progress-shell" aria-label={`Quiz progress ${quizPercent}%`}>
+            <span style={{ width: `${quizPercent}%` }} />
+          </div>
+          <div className="micro-grid">
+            <span><Flame size={15} /> {profile.courseProgress.streak} streak</span>
+            <span><GraduationCap size={15} /> {profile.quizHistory.length}/{quizQuestions.length} quiz</span>
+            <span><Bell size={15} /> {dueReviews} due</span>
+            <span><ShieldCheck size={15} /> local first</span>
+          </div>
+        </aside>
+      </section>
+
+      <section className="workflow-strip" aria-label="Learning workflow">
+        <div>
+          <BookOpen size={18} />
+          <span>Learn</span>
+        </div>
+        <div>
+          <GraduationCap size={18} />
+          <span>Recall</span>
+        </div>
+        <div>
+          <MessageCircle size={18} />
+          <span>Write</span>
+        </div>
+        <div>
+          <Headphones size={18} />
+          <span>Speak</span>
+        </div>
+        <div>
+          <Cloud size={18} />
+          <span>Sync</span>
+        </div>
+      </section>
+
+      <section className="stats-row">
+        <Stat label="Streak" value={profile.courseProgress.streak} />
+        <Stat label="Due reviews" value={dueReviews} />
+        <Stat label="Quiz ✓" value={correctAnswers} />
+        <Stat label="Weak points" value={profile.weakPoints.length} />
+      </section>
+
+      <section className="panel next-panel">
+        <div>
+          <p className="eyebrow">Next action</p>
+          <h2>{currentLesson.title}</h2>
+          <p><SmartText text={currentLesson.lead} rate={profile.settings.ttsRate} /></p>
+        </div>
+        <button className="primary" type="button" onClick={() => setView("lesson")}>
+          <BookOpen size={18} />
+          Open lesson
+        </button>
+      </section>
+
+      <section className="grid-2">
+        <button className="tile" type="button" onClick={() => setView("quiz")}>
+          <GraduationCap />
+          <span>Refresher quiz</span>
+          <small>{profile.quizHistory.length}/{quizQuestions.length} answered</small>
+        </button>
+        <button className="tile" type="button" onClick={() => setView("vocab")}>
+          <Search />
+          <span>Vocabulary bank</span>
+          <small>{vocabulary.length} business-focused terms</small>
+        </button>
+        <button className="tile featured" type="button" onClick={() => setView("lesson")}>
+          <FileText />
+          <span>Email format coach</span>
+          <small>salutations, commas, sign-offs</small>
+        </button>
+        <button className="tile" type="button" onClick={() => setView("practice")}>
+          <RotateCcw />
+          <span>Talk-back practice</span>
+          <small>TTS + local recording</small>
+        </button>
+        <button className="tile" type="button" onClick={() => setView("sync")}>
+          <Cloud />
+          <span>Drive profile</span>
+          <small>{lastSynced}</small>
+        </button>
+      </section>
+
+      <section className="insight-panel">
+        <div>
+          <Sparkles size={18} />
+          <strong>Weak-point radar</strong>
+        </div>
+        <p>
+          {profile.weakPoints.length
+            ? profile.weakPoints.map((item) => item.label).join(" · ")
+            : "Ready to watch: schreiben vs sprechen · kaufen · Kunde · heute · salutation commas"}
+        </p>
+      </section>
+    </main>
+  );
+}
+
+function LessonView({
+  lesson,
+  profile,
+  onComplete,
+}: {
+  lesson: Lesson;
+  profile: UserProfile;
+  onComplete: () => void;
+}) {
+  return (
+    <main className="screen lesson">
+      <section className="lesson-head">
+        <p className="eyebrow">{lesson.eyebrow}</p>
+        <h1>{lesson.title}</h1>
+        <p className="lead"><SmartText text={lesson.lead} rate={profile.settings.ttsRate} /></p>
+        <div className="hero-phrase">
+          <SpeakableGerman text={lesson.hero.de} phonetic={lesson.hero.phonetic} ascii={lesson.hero.ascii} rate={profile.settings.ttsRate} block />
+        </div>
+        <div className="callout">Tap any green German word or phrase to hear it.</div>
+      </section>
+
+      <section className="panel why">
+        <h2>Why this matters</h2>
+        <p><SmartText text={lesson.why} rate={profile.settings.ttsRate} /></p>
+      </section>
+
+      {lesson.sections.map((section) => (
+        <section className="panel" key={section.title}>
+          <h2>{section.title}</h2>
+          <p><SmartText text={section.body} rate={profile.settings.ttsRate} /></p>
+          <GermanList items={section.examples} rate={profile.settings.ttsRate} />
+        </section>
+      ))}
+
+      <section className="panel">
+        <h2>Words you just banked</h2>
+        <GermanList items={lesson.sections.flatMap((section) => section.examples)} rate={profile.settings.ttsRate} />
+      </section>
+
+      <section className="panel recap">
+        <h2>Recap</h2>
+        <ul>
+          {lesson.recap.map((item) => (
+            <li key={item}><SmartText text={item} rate={profile.settings.ttsRate} /></li>
+          ))}
+        </ul>
+        <p className="next-line"><SmartText text={`Next: ${lesson.next}`} rate={profile.settings.ttsRate} /></p>
+        <button className="primary" type="button" onClick={onComplete}>
+          <CheckCircle2 size={18} />
+          Mark complete
+        </button>
+      </section>
+    </main>
+  );
+}
+
+function QuizView({
+  profile,
+  setProfile,
+}: {
+  profile: UserProfile;
+  setProfile: (profile: UserProfile) => void;
+}) {
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const latestByQuestion = new Map(profile.quizHistory.map((record) => [record.questionId, record]));
+
+  async function submit(question: QuizQuestion) {
+    const answer = answers[question.id] ?? "";
+    const correct = isCorrect(question, answer);
+    const updatedAt = now();
+    const quizRecord = {
+      id: `${question.id}-${updatedAt}`,
+      questionId: question.id,
+      answer,
+      correct,
+      updatedAt,
+    };
+    const weakPoints = correct || !question.weakPoint
+      ? profile.weakPoints
+      : [
+          ...profile.weakPoints.filter((item) => item.id !== question.weakPoint),
+          {
+            id: question.weakPoint,
+            label: question.weakPoint,
+            misses: (profile.weakPoints.find((item) => item.id === question.weakPoint)?.misses ?? 0) + 1,
+            updatedAt,
+          },
+        ];
+    const reviewQueue = [
+      ...profile.reviewQueue.filter((item) => item.id !== question.id),
+      {
+        id: question.id,
+        dueAt: new Date(Date.now() + (correct ? 3 : 1) * 86400000).toISOString(),
+        intervalDays: correct ? 3 : 1,
+        updatedAt,
+      },
+    ];
+    const next = {
+      ...profile,
+      updatedAt,
+      quizHistory: [...profile.quizHistory.filter((item) => item.questionId !== question.id), quizRecord],
+      weakPoints,
+      reviewQueue,
+      courseProgress: {
+        ...profile.courseProgress,
+        streak: profile.courseProgress.streak + 1,
+        lastStudiedAt: updatedAt,
+      },
+    };
+    await saveProfile(next);
+    setProfile(next);
+  }
+
+  return (
+    <main className="screen">
+      <section className="page-title">
+        <p className="eyebrow">Active recall</p>
+        <h1>Refresher quiz</h1>
+        <p className="lead">Weighted toward weak points from the handoff. Answer, check, then drill misses.</p>
+      </section>
+
+      <div className="quiz-list">
+        {quizQuestions.map((question, index) => {
+          const result = latestByQuestion.get(question.id);
+          return (
+            <section className={`panel quiz-card ${result ? (result.correct ? "correct" : "wrong") : ""}`} key={question.id}>
+              <div className="quiz-top">
+                <span>{index + 1}</span>
+                <strong>{question.type}</strong>
+              </div>
+              <p><SmartText text={question.prompt} rate={profile.settings.ttsRate} /></p>
+              {question.german ? <GermanList items={question.german} rate={profile.settings.ttsRate} /> : null}
+              {question.choices ? (
+                <div className="segmented">
+                  {question.choices.map((choice) => (
+                    <button
+                      key={choice}
+                      type="button"
+                      onClick={() => {
+                        setAnswers((old) => ({ ...old, [question.id]: choice }));
+                        if (vocabulary.some((item) => item.de === choice || item.ascii === choice)) {
+                          speakGerman(choice, profile.settings.ttsRate);
+                        }
+                      }}
+                    >
+                      <SmartText text={choice} rate={profile.settings.ttsRate} />
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              <input
+                value={answers[question.id] ?? result?.answer ?? ""}
+                onChange={(event) => setAnswers((old) => ({ ...old, [question.id]: event.target.value }))}
+                placeholder="Type your answer"
+              />
+              <div className="button-row">
+                <button className="primary" type="button" onClick={() => submit(question)}>
+                  Check
+                </button>
+                {result ? <span className={result.correct ? "ok" : "bad"}>{result.correct ? "✓ Correct" : "✗ Drill this"}</span> : null}
+              </div>
+              {result ? <p className="explanation"><SmartText text={question.explanation} rate={profile.settings.ttsRate} /></p> : null}
+            </section>
+          );
+        })}
+      </div>
+    </main>
+  );
+}
+
+function VocabView({ profile }: { profile: UserProfile }) {
+  const [query, setQuery] = useState("");
+  const filtered = vocabulary.filter((item) => {
+    const haystack = `${item.de} ${item.ascii ?? ""} ${item.en ?? ""} ${item.tags.join(" ")}`.toLowerCase();
+    return haystack.includes(query.toLowerCase());
+  });
+
+  return (
+    <main className="screen">
+      <section className="page-title">
+        <p className="eyebrow">Banked words</p>
+        <h1>Vocabulary</h1>
+        <p className="lead">Business, tech, AI, sales, email, and weak-point words. Every German item speaks.</p>
+      </section>
+      <label className="search-box">
+        <Search size={18} />
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search German, English, or tag" />
+      </label>
+      <section className="vocab-list">
+        {filtered.map((item) => (
+          <article className={`vocab-card ${item.weak ? "weak" : ""}`} key={item.id}>
+            <SpeakableGerman text={item.de} phonetic={item.phonetic} ascii={item.ascii} rate={profile.settings.ttsRate} block />
+            <p>{item.en}</p>
+            <div className="tags">{item.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+          </article>
+        ))}
+      </section>
+    </main>
+  );
+}
+
+function PracticeView({ profile }: { profile: UserProfile }) {
+  const phrases = [
+    { de: "Mit freundlichen Grüßen", phonetic: "mit FROYND-likh-en GRUE-sen" },
+    { de: "Sehr geehrte Frau Weber,", phonetic: "zayr guh-AIR-tuh frow VAY-ber" },
+    { de: "Sehr geehrter Herr Klein,", phonetic: "zayr guh-AIR-ter hair kline" },
+    { de: "Ich schreibe Ihnen heute.", phonetic: "ikh SHRY-buh EE-nen HOY-tuh" },
+  ];
+  return (
+    <main className="screen">
+      <section className="page-title">
+        <p className="eyebrow">Pronunciation loop</p>
+        <h1>Talk-back practice</h1>
+        <p className="lead">The app speaks, you record, then you compare. Recordings are local-only.</p>
+      </section>
+      {phrases.map((phrase) => (
+        <AudioRecorder key={phrase.de} phrase={phrase.de} phonetic={phrase.phonetic} rate={profile.settings.ttsRate} />
+      ))}
+    </main>
+  );
+}
+
+function SyncView({
+  profile,
+  setProfile,
+}: {
+  profile: UserProfile;
+  setProfile: (profile: UserProfile) => void;
+}) {
+  const [clientId, setClientId] = useState(profile.settings.googleClientId ?? builtinClientId ?? "");
+  const [status, setStatus] = useState("");
+  const fileInput = useRef<HTMLInputElement | null>(null);
+
+  async function saveClientId() {
+    const next = { ...profile, settings: { ...profile.settings, googleClientId: clientId } };
+    await saveProfile(next);
+    setProfile(next);
+    setStatus("Google client ID saved locally.");
+  }
+
+  async function sync() {
+    setStatus("Opening Google sign-in...");
+    try {
+      const next = await syncWithDrive({ ...profile, settings: { ...profile.settings, googleClientId: clientId } }, clientId);
+      await replaceProfile(next);
+      setProfile(next);
+      setStatus("Drive profile synced.");
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Drive sync failed.");
+    }
+  }
+
+  function exportJson() {
+    downloadFile("german-learning-profile.json", JSON.stringify(profile, null, 2), "application/json");
+  }
+
+  async function importJson(file: File) {
+    const text = await file.text();
+    const next = JSON.parse(text) as UserProfile;
+    await replaceProfile(next);
+    setProfile(next);
+    setStatus("Profile imported.");
+  }
+
+  function exportCalendar() {
+    const start = new Date();
+    start.setHours(profile.settings.reminderHour, 0, 0, 0);
+    const stamp = start.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "BEGIN:VEVENT",
+      "UID:german-pro-daily-review",
+      `DTSTART:${stamp}`,
+      "RRULE:FREQ=DAILY",
+      "SUMMARY:German review",
+      "DESCRIPTION:Open German Pro and clear due reviews.",
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+    downloadFile("german-review-reminder.ics", ics, "text/calendar");
+  }
+
+  return (
+    <main className="screen">
+      <section className="page-title">
+        <p className="eyebrow">Profile</p>
+        <h1>Google Drive sync</h1>
+        <p className="lead">Uses a hidden app data file. It stores progress, quiz history, weak points, settings, and review queue. Audio recordings stay local.</p>
+      </section>
+
+      <section className="panel">
+        <h2>Drive setup</h2>
+        <p className="muted">Add your Google OAuth web client ID. On GitHub Pages, this can also come from the `VITE_GOOGLE_CLIENT_ID` repository secret.</p>
+        <input value={clientId} onChange={(event) => setClientId(event.target.value)} placeholder="Google OAuth web client ID" />
+        <div className="button-row">
+          <button type="button" onClick={saveClientId}>Save ID</button>
+          <button className="primary" type="button" onClick={sync} disabled={!clientId}>
+            <Cloud size={18} />
+            Sync now
+          </button>
+        </div>
+        {status ? <p className="status">{status}</p> : null}
+        <p className="muted">Last sync: {profile.settings.lastSyncedAt ? new Date(profile.settings.lastSyncedAt).toLocaleString() : "never"}</p>
+      </section>
+
+      <section className="panel">
+        <h2>Backup</h2>
+        <div className="button-row">
+          <button type="button" onClick={exportJson}>
+            <Download size={18} />
+            Export JSON
+          </button>
+          <button type="button" onClick={() => fileInput.current?.click()}>
+            <Upload size={18} />
+            Import JSON
+          </button>
+          <button type="button" onClick={exportCalendar}>
+            <Bell size={18} />
+            Calendar reminder
+          </button>
+        </div>
+        <input
+          ref={fileInput}
+          className="hidden"
+          type="file"
+          accept="application/json"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) importJson(file);
+          }}
+        />
+      </section>
+    </main>
+  );
+}
+
+export default function App() {
+  const [profile, setProfile] = useState<UserProfile>(() => createDefaultProfile());
+  const [view, setView] = useState<View>("dashboard");
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    initVoices();
+    getProfile().then((stored) => {
+      setProfile(stored);
+      setReady(true);
+    });
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => undefined);
+    }
+  }, []);
+
+  const currentLesson = useMemo(
+    () => lessons.find((lesson) => lesson.id === profile.courseProgress.currentLessonId) ?? lessons[0],
+    [profile.courseProgress.currentLessonId]
+  );
+
+  async function completeLesson() {
+    const nextLesson = currentLesson.id === "refresher" ? "module-2-step-3" : currentLesson.id;
+    const next = {
+      ...profile,
+      courseProgress: {
+        ...profile.courseProgress,
+        currentLessonId: nextLesson,
+        completedLessonIds: [...new Set([...profile.courseProgress.completedLessonIds, currentLesson.id])],
+        streak: profile.courseProgress.streak + 1,
+        lastStudiedAt: now(),
+      },
+    };
+    await saveProfile(next);
+    setProfile(next);
+    setView("dashboard");
+  }
+
+  if (!ready) {
+    return <main className="loading">Loading WortPilot...</main>;
+  }
+
+  return (
+    <div className="app">
+      <nav className="topbar">
+        <button className="brand" type="button" onClick={() => setView("dashboard")}>
+          <img src={`${import.meta.env.BASE_URL}icon-192.png`} alt="" />
+          <span>WortPilot</span>
+        </button>
+        <div className="nav-actions">
+          {[
+            ["dashboard", Home],
+            ["lesson", BookOpen],
+            ["quiz", GraduationCap],
+            ["vocab", Search],
+            ["practice", RotateCcw],
+            ["sync", Cloud],
+          ].map(([name, Icon]) => (
+            <button
+              key={name as string}
+              className={view === name ? "active" : ""}
+              type="button"
+              onClick={() => setView(name as View)}
+              title={name as string}
+            >
+              <Icon size={18} />
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {view === "dashboard" ? <Dashboard profile={profile} currentLesson={currentLesson} setView={setView} /> : null}
+      {view === "lesson" ? <LessonView lesson={currentLesson} profile={profile} onComplete={completeLesson} /> : null}
+      {view === "quiz" ? <QuizView profile={profile} setProfile={setProfile} /> : null}
+      {view === "vocab" ? <VocabView profile={profile} /> : null}
+      {view === "practice" ? <PracticeView profile={profile} /> : null}
+      {view === "sync" ? <SyncView profile={profile} setProfile={setProfile} /> : null}
+    </div>
+  );
+}
