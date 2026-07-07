@@ -33,6 +33,7 @@ type SyncState = "unsynced" | "syncing" | "synced" | "issue";
 type VocabFilter = "all" | "learned" | "locked";
 
 const builtinClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const VOCAB_PAGE_SIZE = 120;
 
 function normalize(answer: string) {
   return answer.trim().toLowerCase().replace(/\s+/g, " ");
@@ -421,6 +422,7 @@ function QuizView({
 function VocabView({ profile }: { profile: UserProfile }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<VocabFilter>("learned");
+  const [visibleCount, setVisibleCount] = useState(VOCAB_PAGE_SIZE);
   const learnedLimit = learnedVocabLimit(profile);
   const vocabWithState = vocabulary.map((item, index) => ({
     item,
@@ -434,6 +436,11 @@ function VocabView({ profile }: { profile: UserProfile }) {
       const haystack = `${item.de} ${item.ascii ?? ""} ${item.en ?? ""} ${item.tags.join(" ")}`.toLowerCase();
       return haystack.includes(query.toLowerCase());
     });
+  const visibleRows = filtered.slice(0, visibleCount);
+
+  useEffect(() => {
+    setVisibleCount(VOCAB_PAGE_SIZE);
+  }, [filter, query]);
 
   return (
     <main className="screen">
@@ -464,8 +471,9 @@ function VocabView({ profile }: { profile: UserProfile }) {
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search German, English, or tag" />
         </label>
       </div>
+      <p className="list-count">Showing {Math.min(visibleCount, filtered.length)} of {filtered.length} words</p>
       <section className="vocab-list">
-        {filtered.map(({ item, learned }) => (
+        {visibleRows.map(({ item, learned }) => (
           <article className={`vocab-card ${item.weak ? "weak" : ""} ${learned ? "" : "locked"}`} key={item.id}>
             <div className="vocab-card-top">
               <SpeakableGerman text={item.de} phonetic={item.phonetic} ascii={item.ascii} rate={profile.settings.ttsRate} block />
@@ -479,6 +487,13 @@ function VocabView({ profile }: { profile: UserProfile }) {
           </article>
         ))}
       </section>
+      {visibleCount < filtered.length ? (
+        <div className="load-more-row">
+          <button type="button" onClick={() => setVisibleCount((count) => count + VOCAB_PAGE_SIZE)}>
+            Load more words
+          </button>
+        </div>
+      ) : null}
     </main>
   );
 }
@@ -587,11 +602,11 @@ function SyncView({
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
       "BEGIN:VEVENT",
-      "UID:german-pro-daily-review",
+      "UID:wortpilot-daily-review",
       `DTSTART:${stamp}`,
       "RRULE:FREQ=DAILY",
       "SUMMARY:German review",
-      "DESCRIPTION:Open German Pro and clear due reviews.",
+      "DESCRIPTION:Open WortPilot and clear due reviews.",
       "END:VEVENT",
       "END:VCALENDAR",
     ].join("\r\n");

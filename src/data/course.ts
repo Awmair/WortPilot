@@ -1,4 +1,7 @@
 import type { Lesson, QuizQuestion, VocabItem } from "../types";
+import { supplementalVocabulary } from "./supplementalVocabulary";
+
+const VOCABULARY_TARGET = 3000;
 
 const starterVocabulary: VocabItem[] = [
   { id: "hallo", de: "Hallo", en: "hello", phonetic: "HAH-loh", tags: ["greeting"] },
@@ -198,10 +201,33 @@ const expandedVocabulary: VocabItem[] = [
   ]),
 ];
 
-export const vocabulary: VocabItem[] = [
-  ...starterVocabulary.map((item) => ({ ...item, unlockStage: 0 })),
-  ...expandedVocabulary.map((item, index) => ({ ...item, unlockStage: Math.floor(index / 24) + 1 })),
-];
+const progressiveVocabulary = [...expandedVocabulary, ...supplementalVocabulary];
+
+function buildVocabulary(): VocabItem[] {
+  const seenGerman = new Set<string>();
+  const output: VocabItem[] = [];
+
+  for (const item of starterVocabulary) {
+    const key = item.de.toLowerCase();
+    if (seenGerman.has(key)) continue;
+    seenGerman.add(key);
+    output.push({ ...item, unlockStage: 0 });
+  }
+
+  let stagedIndex = 0;
+  for (const item of progressiveVocabulary) {
+    if (output.length === VOCABULARY_TARGET) break;
+    const key = item.de.toLowerCase();
+    if (seenGerman.has(key)) continue;
+    seenGerman.add(key);
+    output.push({ ...item, unlockStage: Math.floor(stagedIndex / 24) + 1 });
+    stagedIndex += 1;
+  }
+
+  return output;
+}
+
+export const vocabulary: VocabItem[] = buildVocabulary();
 
 export const lessons: Lesson[] = [
   {

@@ -57,7 +57,7 @@ Every German word or phrase shown in the app should be tappable and pronounceabl
 
 ### Vocabulary Bank
 
-- Searchable German/English list with 500+ total entries.
+- Searchable German/English list with exactly 3,000 total entries.
 - All / Learned / Locked filters so the full bank is visible while progress still feels paced.
 - Tags for general, lifestyle, internet, tech, AI, business, email, grammar, weak points.
 - Every German item tappable, including locked preview words.

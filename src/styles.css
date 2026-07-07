@@ -634,6 +634,13 @@ code {
   padding-left: 0;
 }
 
+.list-count {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+  margin: -4px 0 14px;
+}
+
 .vocab-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -699,6 +706,17 @@ code {
   font-size: 12px;
   font-weight: 800;
   padding: 4px 8px;
+}
+
+.load-more-row {
+  display: flex;
+  justify-content: center;
+  margin: 22px 0;
+}
+
+.load-more-row button {
+  min-width: 190px;
+  justify-content: center;
 }
 
 .practice-panel {
@@ -1084,6 +1102,10 @@ code {
 
 .example p,
 .vocab-card p {
+  color: var(--focus-muted);
+}
+
+.list-count {
   color: var(--focus-muted);
 }
 

@@ -1,20 +1,27 @@
 import type { QuizRecord, ReviewRecord, UserProfile, WeakPointRecord } from "../types";
 
-const DB_NAME = "german-pro-db";
+const DB_NAME = "wortpilot-db";
+const LEGACY_DB_NAME = "german-pro-db";
 const DB_VERSION = 1;
 const STORE = "kv";
 const PROFILE_KEY = "profile";
-const FALLBACK_PROFILE_KEY = "german-pro-profile";
+const FALLBACK_PROFILE_KEY = "wortpilot-profile";
+const LEGACY_FALLBACK_PROFILE_KEY = "german-pro-profile";
+const DEVICE_ID_KEY = "wortpilot-device-id";
+const LEGACY_DEVICE_ID_KEY = "german-pro-device-id";
 
 function now() {
   return new Date().toISOString();
 }
 
 function makeDeviceId() {
-  const existing = localStorage.getItem("german-pro-device-id");
-  if (existing) return existing;
+  const existing = localStorage.getItem(DEVICE_ID_KEY) ?? localStorage.getItem(LEGACY_DEVICE_ID_KEY);
+  if (existing) {
+    localStorage.setItem(DEVICE_ID_KEY, existing);
+    return existing;
+  }
   const id = crypto.randomUUID();
-  localStorage.setItem("german-pro-device-id", id);
+  localStorage.setItem(DEVICE_ID_KEY, id);
   return id;
 }
 
@@ -121,7 +128,7 @@ export function normalizeProfile(value: unknown): UserProfile {
 }
 
 function readFallbackProfile(): UserProfile | undefined {
-  const raw = localStorage.getItem(FALLBACK_PROFILE_KEY);
+  const raw = localStorage.getItem(FALLBACK_PROFILE_KEY) ?? localStorage.getItem(LEGACY_FALLBACK_PROFILE_KEY);
   if (!raw) return undefined;
   try {
     return normalizeProfile(JSON.parse(raw));
@@ -134,9 +141,9 @@ function writeFallbackProfile(profile: UserProfile) {
   localStorage.setItem(FALLBACK_PROFILE_KEY, JSON.stringify(normalizeProfile(profile)));
 }
 
-function openDb(): Promise<IDBDatabase> {
+function openDb(dbName = DB_NAME): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    const request = indexedDB.open(dbName, DB_VERSION);
     request.onupgradeneeded = () => {
       request.result.createObjectStore(STORE);
     };
@@ -145,35 +152,51 @@ function openDb(): Promise<IDBDatabase> {
   });
 }
 
-export async function getProfile(): Promise<UserProfile> {
+async function readDbProfile(dbName: string): Promise<UserProfile | undefined> {
   try {
-    const db = await openDb();
+    const db = await openDb(dbName);
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE, "readonly");
       const request = tx.objectStore(STORE).get(PROFILE_KEY);
       request.onsuccess = () => {
-        const profile = request.result ? normalizeProfile(request.result) : readFallbackProfile() ?? createDefaultProfile();
-        writeFallbackProfile(profile);
-        resolve(profile);
+        resolve(request.result ? normalizeProfile(request.result) : undefined);
       };
       request.onerror = () => reject(request.error);
     });
   } catch {
-    return readFallbackProfile() ?? createDefaultProfile();
+    return undefined;
   }
+}
+
+async function writeDbProfile(profile: UserProfile): Promise<void> {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, "readwrite");
+    tx.objectStore(STORE).put(profile, PROFILE_KEY);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+export async function getProfile(): Promise<UserProfile> {
+  const profile = await readDbProfile(DB_NAME)
+    ?? readFallbackProfile()
+    ?? await readDbProfile(LEGACY_DB_NAME)
+    ?? createDefaultProfile();
+  writeFallbackProfile(profile);
+  try {
+    await writeDbProfile(profile);
+  } catch {
+    // localStorage fallback above already preserves the profile.
+  }
+  return profile;
 }
 
 export async function saveProfile(profile: UserProfile): Promise<void> {
   const next = normalizeProfile({ ...profile, updatedAt: now() });
   writeFallbackProfile(next);
   try {
-    const db = await openDb();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE, "readwrite");
-      tx.objectStore(STORE).put(next, PROFILE_KEY);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+    return writeDbProfile(next);
   } catch {
     return Promise.resolve();
   }
@@ -183,13 +206,7 @@ export async function replaceProfile(profile: UserProfile): Promise<void> {
   const next = normalizeProfile(profile);
   writeFallbackProfile(next);
   try {
-    const db = await openDb();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE, "readwrite");
-      tx.objectStore(STORE).put(next, PROFILE_KEY);
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+    return writeDbProfile(next);
   } catch {
     return Promise.resolve();
   }

@@ -32,8 +32,11 @@ Measured production React app checks:
 - iPhone-width app: dashboard study card clears bottom nav by 13px in first viewport.
 - iPhone-width app: study-card duplicate metric grid is hidden; stats remain available below.
 - Main screens render without horizontal overflow: Lesson, Quiz, Vocab, Speak, Sync.
-- Vocabulary bank contains 527 entries with All / Learned / Locked filters.
+- Vocabulary bank contains exactly 3,000 entries with All / Learned / Locked filters.
+- Vocabulary list renders incrementally with Load more so iPhone does not paint all 3,000 cards at once.
 - Vocabulary cards keep the German speak control active for learned and locked words.
+- Vocabulary data audit: 3,000 unique IDs, 3,000 unique German entries, 0 missing required fields.
+- Cleanup audit: stale `German Pro` user-facing text removed; storage now writes `wortpilot-*` keys while reading legacy `german-pro-*` keys for migration.
 
 ## Design Audit
 

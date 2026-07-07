@@ -11,6 +11,7 @@ Status: in progress.
 - Refresher quiz.
 - Email sign-off lesson.
 - Vocabulary bank.
+- 3,000-entry progressive vocabulary bank.
 - Talk-back recording.
 - Local profile storage.
 - Google Drive Save & Sync / Restore module.
@@ -41,7 +42,7 @@ Status: in progress.
 
 ## Data And Sync
 
-- Rename storage keys from `german-pro-*` to `wortpilot-*` with migration.
+- Rename storage keys from `german-pro-*` to `wortpilot-*` with migration. Done.
 - Add profile schema migration utility.
 - Add Drive save/restore tests with mocked API.
 - Add profile normalization and import error recovery tests.

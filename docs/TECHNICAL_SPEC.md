@@ -17,6 +17,7 @@
 src/
   App.tsx                         App shell and screen routing
   data/course.ts                  Lesson, quiz, and vocabulary seed content
+  data/supplementalVocabulary.ts  Generated 3,000-word bank expansion source
   components/SpeakableGerman.tsx  Universal German TTS control
   components/TextWithGermanAudio.tsx Known-term auto wrapper
   components/AudioRecorder.tsx    Talk-back recording flow
@@ -64,15 +65,14 @@ type UserProfile = {
 
 ## Local Storage
 
-- IndexedDB database: `german-pro-db`
+- IndexedDB database: `wortpilot-db`
 - Store: `kv`
 - Key: `profile`
-- localStorage fallback key: `german-pro-profile`
-- Device ID stored in localStorage as `german-pro-device-id`
+- localStorage fallback key: `wortpilot-profile`
+- Device ID stored in localStorage as `wortpilot-device-id`
+- Legacy `german-pro-*` keys are read once as a migration source and written forward to the WortPilot keys.
 - Every saved, imported, and restored profile is normalized before use so older JSON files do not crash the app.
 - All edits save locally first. If IndexedDB is unavailable, the app falls back to localStorage.
-
-Future cleanup should rename storage keys to `wortpilot-*` with a migration path.
 
 ## German Audio
 

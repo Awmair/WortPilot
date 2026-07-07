@@ -59,7 +59,7 @@ Every module should include at least some vocabulary from:
 - Sales/agency.
 - Grammar/function words.
 
-The production vocabulary bank starts with 500+ entries. Starter words are learned immediately; later words are locked into progressive stages but remain visible and tappable for pronunciation previews.
+The production vocabulary bank contains exactly 3,000 entries. Starter words are learned immediately; later words are locked into progressive stages but remain visible and tappable for pronunciation previews.
 
 ## Lesson Format
 
