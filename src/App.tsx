@@ -1,16 +1,17 @@
 import {
+  ArrowDownAZ,
   Bell,
   BookOpen,
   CheckCircle2,
+  CircleHelp,
   Cloud,
   Download,
   FileText,
   Flame,
   GraduationCap,
-  Headphones,
   Home,
   MessageCircle,
-  RotateCcw,
+  Mic,
   Search,
   ShieldCheck,
   Sparkles,
@@ -115,9 +116,12 @@ function Dashboard({
               Continue lesson
             </button>
             <button type="button" onClick={() => setView("practice")}>
-              <Headphones size={18} />
+              <Mic size={18} />
               Speak back
             </button>
+          </div>
+          <div className="hero-visual-card" aria-hidden="true">
+            <img src={`${import.meta.env.BASE_URL}dashboard-visual.png`} alt="" />
           </div>
         </div>
 
@@ -151,7 +155,7 @@ function Dashboard({
           <span>Learn</span>
         </div>
         <div>
-          <GraduationCap size={18} />
+          <CircleHelp size={18} />
           <span>Recall</span>
         </div>
         <div>
@@ -159,7 +163,7 @@ function Dashboard({
           <span>Write</span>
         </div>
         <div>
-          <Headphones size={18} />
+          <Mic size={18} />
           <span>Speak</span>
         </div>
         <div>
@@ -189,12 +193,12 @@ function Dashboard({
 
       <section className="grid-2">
         <button className="tile" type="button" onClick={() => setView("quiz")}>
-          <GraduationCap />
+          <CircleHelp />
           <span>Refresher quiz</span>
           <small>{profile.quizHistory.length}/{quizQuestions.length} answered</small>
         </button>
         <button className="tile" type="button" onClick={() => setView("vocab")}>
-          <Search />
+          <ArrowDownAZ />
           <span>Vocabulary bank</span>
           <small>{vocabulary.length} business-focused terms</small>
         </button>
@@ -204,7 +208,7 @@ function Dashboard({
           <small>salutations, commas, sign-offs</small>
         </button>
         <button className="tile" type="button" onClick={() => setView("practice")}>
-          <RotateCcw />
+          <Mic />
           <span>Talk-back practice</span>
           <small>TTS + local recording</small>
         </button>
@@ -649,18 +653,14 @@ export default function App() {
 
   return (
     <div className="app">
-      <nav className="topbar">
-        <button className="brand" type="button" onClick={() => setView("dashboard")}>
-          <img src={`${import.meta.env.BASE_URL}icon-192.png`} alt="" />
-          <span>WortPilot</span>
-        </button>
+      <nav className="topbar" aria-label="Primary navigation">
         <div className="nav-actions">
           {[
             ["dashboard", "Home", Home],
             ["lesson", "Lesson", BookOpen],
-            ["quiz", "Quiz", GraduationCap],
-            ["vocab", "Vocab", Search],
-            ["practice", "Speak", RotateCcw],
+            ["quiz", "Quiz", CircleHelp],
+            ["vocab", "A-Z", ArrowDownAZ],
+            ["practice", "Speak", Mic],
             ["sync", "Sync", Cloud],
           ].map(([name, label, Icon]) => (
             <button

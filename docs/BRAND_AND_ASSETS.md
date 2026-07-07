@@ -51,12 +51,37 @@ emerald pronunciation accent, restrained gold and formal blue. No text, no flag,
 - `design-mockups/index.html`
 - `design-mockups/assets/app-icon.png`
 - `design-mockups/assets/imagegen-ui-reference.png`
+- `public/dashboard-visual.png`
 
 Mockup concepts:
 
 - Concept A: Pilot Console, recommended.
 - Concept B: Deep Focus, dark/focus study mode.
 - Concept C: Compact Cards, dense utility-first study mode.
+
+## Dashboard Visual
+
+Source asset:
+
+- `public/dashboard-visual.png`
+
+Design intent:
+
+- Production dashboard visual for Concept B.
+- Dark enterprise-grade product UI feel.
+- Suggests pronunciation, learning progress, microphone practice, and Drive sync.
+- No readable text, no logo, no flags.
+
+Generated via built-in `imagegen`.
+
+Prompt summary:
+
+```text
+Premium enterprise-grade abstract dashboard hero visual for a business German learning app:
+dark focus-mode glass panels, pronunciation waveform, lesson card shapes, vocabulary tiles,
+microphone/speech practice, and discreet cloud sync motif. No text, no letters, no logos,
+no flags, no people, no watermark.
+```
 
 ## Brand Voice
 
@@ -90,4 +115,3 @@ Avoid:
 - App Store-style screenshot set for install instructions.
 - Dark-mode icon variant if Deep Focus becomes a main mode.
 - Small empty-state illustrations for review complete, sync success, and offline mode.
-
