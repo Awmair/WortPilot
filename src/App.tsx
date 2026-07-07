@@ -108,7 +108,7 @@ function Dashboard({
               <p className="muted compact">Business German for AI freelancers</p>
             </div>
           </div>
-          <h1>Write German client messages with confidence.</h1>
+          <h1>Build practical German with confidence.</h1>
           <p className="lead">One focused PWA for email German, business vocabulary, tap-to-hear pronunciation, talk-back practice, and Drive-backed progress.</p>
           <div className="hero-actions">
             <button className="primary" type="button" onClick={() => setView("lesson")}>
@@ -119,9 +119,6 @@ function Dashboard({
               <Mic size={18} />
               Speak back
             </button>
-          </div>
-          <div className="hero-visual-card" aria-hidden="true">
-            <img src={`${import.meta.env.BASE_URL}dashboard-visual.png`} alt="" />
           </div>
         </div>
 

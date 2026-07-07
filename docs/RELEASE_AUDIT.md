@@ -25,11 +25,10 @@ Measured production React app checks:
 - `npm run build` passes after Concept B conversion.
 - Desktop app: no horizontal overflow, six bottom-nav items, minimum button height 44px.
 - Desktop/narrow app: bottom nav no longer contains the brand/app icon; nav width measured 529px with six 44px-high tabs.
-- Desktop/narrow app: dashboard app icon is present in the hero identity area, and `public/dashboard-visual.png` loads.
+- Desktop/narrow app: dashboard app icon is present in the hero identity area.
 - iPhone-width app: 375px client width, 375px scroll width, no horizontal overflow.
 - iPhone-width app: bottom nav is fixed, 64px high, 357px wide, 14px above viewport bottom.
 - iPhone-width app: six nav tabs are 52px wide and 44px high; labels are hidden to avoid crowding.
-- iPhone-width app: dashboard visual is constrained to 124px tall.
 - iPhone-width app: dashboard study card clears bottom nav by 13px in first viewport.
 - iPhone-width app: study-card duplicate metric grid is hidden; stats remain available below.
 - Main screens render without horizontal overflow: Lesson, Quiz, Vocab, Speak, Sync.
