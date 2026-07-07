@@ -32,7 +32,13 @@ npx vite preview --host 127.0.0.1 --port 5180
 
 ## iPhone PWA
 
-Deploy to GitHub Pages, open the Pages URL on iPhone, then use Share -> Add to Home Screen.
+Live app:
+
+```text
+https://awmair.github.io/WortPilot/
+```
+
+Open the Pages URL on iPhone, then use Share -> Add to Home Screen.
 
 ## Google Drive Sync
 

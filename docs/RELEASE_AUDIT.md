@@ -9,6 +9,7 @@ Last audited locally:
 - UI mockup board: `design-mockups/index.html`
 - Production app build: `npm run build`
 - Target repository: `Awmair/WortPilot`
+- Live URL: `https://awmair.github.io/WortPilot/`
 
 Measured Concept B mockup checks:
 
@@ -60,6 +61,8 @@ Measured production React app checks:
 
 - [x] `npm run build` passes.
 - [x] App remains static-hostable.
+- [x] GitHub Pages deployment succeeds with Actions source.
+- [x] Live HTTPS URL returns the WortPilot app shell.
 - [x] `node_modules` and `dist` are ignored.
 - [x] PWA icon assets are committed.
 - [x] Service worker uses network-first fetch with cached fallback.
@@ -75,13 +78,12 @@ Measured production React app checks:
 - [ ] Add automated tests for profile normalization, Drive save/restore failures, and screen rendering.
 - [ ] Add visible offline/cache status in the production app.
 - [ ] Configure Google OAuth and GitHub secret `VITE_GOOGLE_CLIENT_ID`.
-- [ ] Enable GitHub Pages with Actions source.
+- [x] Enable GitHub Pages with Actions source.
 - [ ] Verify deployed app on real iPhone Home Screen.
 
 ## Release Gate
 
 Do not call the app release-ready until:
 
-1. GitHub Pages deployment completes.
-2. iPhone PWA install, offline launch, TTS, local progress, and backup/export are manually verified.
-3. Google OAuth client ID is configured if Drive sync is part of release acceptance.
+1. iPhone PWA install, offline launch, TTS, local progress, and backup/export are manually verified.
+2. Google OAuth client ID is configured if Drive sync is part of release acceptance.

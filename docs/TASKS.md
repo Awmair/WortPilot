@@ -2,10 +2,10 @@
 
 ## Immediate
 
-- Connect GitHub remote and push local commits.
-- Enable GitHub Pages with Actions source.
+- [x] Connect GitHub remote and push local commits.
+- [x] Enable GitHub Pages with Actions source.
 - Add `VITE_GOOGLE_CLIENT_ID` secret after Google OAuth setup.
-- Use the audited Concept B direction from `design-mockups/index.html` as the production UI direction.
+- [x] Use the audited Concept B direction from `design-mockups/index.html` as the production UI direction.
 
 ## Production UI
 
@@ -40,6 +40,6 @@
 ## Documentation
 
 - Add screenshots after final UI direction is implemented.
-- Add GitHub Pages URL to README.
+- [x] Add GitHub Pages URL to README.
 - Add Google OAuth setup screenshots if needed.
 - Add iPhone install walkthrough.
