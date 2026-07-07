@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WortPilot UI Mockups</title>
+    <style>
+      :root {
+        --paper: #fbfaf7;
+        --paper-2: #f4efe5;
+        --ink: #1c1b22;
+        --muted: #6b6a73;
+        --line: #e5e2d9;
+        --gold: #b07b16;
+        --gold-soft: #f3ebd8;
+        --green: #0e7a63;
+        --green-soft: #e2f1ec;
+        --blue: #2c5aa0;
+        --blue-soft: #e4ecf7;
+        --navy: #142033;
+        --red: #b23a2e;
+        --red-soft: #f6e4e1;
+        --shadow: 0 28px 90px rgba(28, 27, 34, 0.12);
+        --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --serif: Georgia, "Times New Roman", serif;
+        --mono: "SFMono-Regular", Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #f8f3ea 0%, var(--paper) 34%, #f7f6f2 100%);
+        color: var(--ink);
+        font-family: var(--font);
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .page {
+        width: min(100% - 32px, 1320px);
+        margin: 0 auto;
+        padding: 32px 0 56px;
+      }
+
+      .top {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 24px;
+        align-items: end;
+        min-height: 360px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 28px;
+      }
+
+      .brandline {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 22px;
+      }
+
+      .brandline img,
+      .mini-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        box-shadow: 0 16px 42px rgba(28, 27, 34, 0.16);
+      }
+
+      .eyebrow {
+        margin: 0;
+        color: var(--gold);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        max-width: 820px;
+        font-family: var(--serif);
+        font-size: clamp(46px, 8vw, 92px);
+        line-height: 0.98;
+      }
+
+      h2 {
+        font-family: var(--serif);
+        font-size: 36px;
+      }
+
+      h3 {
+        font-size: 18px;
+      }
+
+      p {
+        line-height: 1.5;
+      }
+
+      .lead {
+        max-width: 700px;
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .decision-card,
+      .note,
+      .coverage,
+      .reference-card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.82);
+        box-shadow: var(--shadow);
+      }
+
+      .decision-card {
+        padding: 22px;
+      }
+
+      .score {
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .score div {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .score div:last-child {
+        border-bottom: 0;
+      }
+
+      .score strong {
+        color: var(--green);
+      }
+
+      .tabs {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 16px 0;
+        background: rgba(251, 250, 247, 0.92);
+        backdrop-filter: blur(16px);
+      }
+
+      .tabs button {
+        min-height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 0 14px;
+        background: white;
+        color: var(--ink);
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .tabs button.active {
+        background: var(--ink);
+        color: white;
+        border-color: var(--ink);
+      }
+
+      .mockup-set {
+        display: none;
+        padding-top: 20px;
+      }
+
+      .mockup-set.active {
+        display: block;
+      }
+
+      .set-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: start;
+        margin-bottom: 22px;
+      }
+
+      .set-head p {
+        max-width: 620px;
+        color: var(--muted);
+      }
+
+      .phone-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(250px, 1fr));
+        gap: 18px;
+      }
+
+      .phone {
+        aspect-ratio: 390 / 844;
+        border: 10px solid #17171b;
+        border-radius: 42px;
+        background: var(--paper);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .phone::before {
+        content: "";
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        width: 92px;
+        height: 24px;
+        transform: translateX(-50%);
+        border-radius: 999px;
+        background: #17171b;
+        z-index: 3;
+      }
+
+      .screen {
+        height: 100%;
+        padding: 42px 18px 18px;
+        overflow: hidden;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+
+      .brand-mini {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 900;
+      }
+
+      .brand-mini img {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+      }
+
+      .pill,
+      .speak,
+      .tag,
+      .mini-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: 34px;
+        border-radius: 10px;
+        padding: 7px 10px;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .pill {
+        background: var(--blue-soft);
+        color: var(--blue);
+      }
+
+      .speak {
+        background: var(--green-soft);
+        color: var(--green);
+        border: 1px solid rgba(14, 122, 99, 0.16);
+      }
+
+      .tag {
+        background: white;
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      .mini-button {
+        background: var(--ink);
+        color: white;
+      }
+
+      .screen h4 {
+        margin: 0;
+        font-family: var(--serif);
+        font-size: 31px;
+        line-height: 1;
+      }
+
+      .screen h5 {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      .small {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.88);
+        padding: 14px;
+        margin-top: 12px;
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .metric {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.78);
+      }
+
+      .metric strong {
+        display: block;
+        font-size: 22px;
+        font-family: var(--serif);
+      }
+
+      .nav {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 16px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 7px;
+      }
+
+      .nav span {
+        height: 46px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.88);
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+      }
+
+      .nav span.active {
+        background: var(--green-soft);
+        color: var(--green);
+      }
+
+      .progress {
+        height: 10px;
+        border-radius: 999px;
+        background: #ece7dd;
+        overflow: hidden;
+      }
+
+      .progress span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--green), var(--blue));
+      }
+
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .list {
+        display: grid;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .list-item {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.76);
+      }
+
+      .lesson-line {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .lesson-line:last-child {
+        border-bottom: 0;
+      }
+
+      .choice {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 11px;
+        background: white;
+        margin-top: 8px;
+        font-size: 13px;
+        font-weight: 750;
+      }
+
+      .choice.good {
+        border-color: rgba(14, 122, 99, 0.28);
+        background: var(--green-soft);
+        color: var(--green);
+      }
+
+      .record-orb {
+        width: 132px;
+        height: 132px;
+        margin: 18px auto;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(145deg, #0e7a63, #095241);
+        color: white;
+        font-size: 42px;
+        box-shadow: 0 24px 50px rgba(14, 122, 99, 0.28);
+      }
+
+      .dark .phone {
+        border-color: #05070b;
+      }
+
+      .dark .screen {
+        background: #101723;
+        color: white;
+      }
+
+      .dark .card,
+      .dark .metric,
+      .dark .list-item,
+      .dark .choice {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+
+      .dark .small,
+      .dark .tag {
+        color: rgba(255, 255, 255, 0.68);
+      }
+
+      .dark .tag,
+      .dark .nav span {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+
+      .compact .screen {
+        background: #f6f1e8;
+      }
+
+      .compact .card {
+        box-shadow: 0 14px 36px rgba(28, 27, 34, 0.08);
+      }
+
+      .coverage {
+        margin-top: 30px;
+        padding: 22px;
+      }
+
+      .coverage-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(180px, 1fr));
+        gap: 12px;
+        margin-top: 14px;
+      }
+
+      .coverage-grid div {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--paper);
+        padding: 14px;
+      }
+
+      .coverage-grid strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .reference-card {
+        margin-top: 30px;
+        overflow: hidden;
+      }
+
+      .reference-card img {
+        display: block;
+        width: 100%;
+      }
+
+      .reference-card div {
+        padding: 18px 22px;
+      }
+
+      .notes {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 22px;
+      }
+
+      .note {
+        padding: 18px;
+      }
+
+      .note strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      @media (max-width: 1120px) {
+        .top,
+        .phone-row,
+        .coverage-grid,
+        .notes {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .page {
+          width: min(100% - 20px, 1320px);
+          padding-top: 18px;
+        }
+
+        .top,
+        .phone-row,
+        .coverage-grid,
+        .notes {
+          grid-template-columns: 1fr;
+        }
+
+        .set-head {
+          display: block;
+        }
+
+        .phone {
+          width: min(100%, 390px);
+          margin: 0 auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="top">
+        <div>
+          <div class="brandline">
+            <img src="assets/app-icon.png" alt="" />
+            <div>
+              <p class="eyebrow">WortPilot UI direction</p>
+              <strong>Design review mockups</strong>
+            </div>
+          </div>
+          <h1>Modern German learning that feels built for client work.</h1>
+          <p class="lead">
+            These mockups place every planned feature into a clear product flow: learn, hear, quiz, write,
+            speak back, review, sync, and recover progress.
+          </p>
+        </div>
+        <aside class="decision-card">
+          <p class="eyebrow">Recommended route</p>
+          <h2>Concept A</h2>
+          <p class="small">Light premium interface. Best fit for daily iPhone use, business writing, and long study sessions.</p>
+          <div class="score">
+            <div><span>Clarity</span><strong>High</strong></div>
+            <div><span>Feature coverage</span><strong>Complete</strong></div>
+            <div><span>iPhone comfort</span><strong>Best</strong></div>
+            <div><span>Brand feel</span><strong>Premium</strong></div>
+          </div>
+        </aside>
+      </section>
+
+      <nav class="tabs" aria-label="Mockup concepts">
+        <button class="active" data-target="concept-a">Concept A · Pilot Console</button>
+        <button data-target="concept-b">Concept B · Deep Focus</button>
+        <button data-target="concept-c">Concept C · Compact Cards</button>
+        <button data-target="coverage">Feature Map</button>
+      </nav>
+
+      <section id="concept-a" class="mockup-set active">
+        <div class="set-head">
+          <div>
+            <p class="eyebrow">Concept A</p>
+            <h2>Pilot Console</h2>
+          </div>
+          <p>
+            A calm, premium dashboard with a visible next action, persistent bottom navigation, and each feature
+            surfaced through task cards. This should be the default implementation direction.
+          </p>
+        </div>
+        <div class="phone-row">
+          <article class="phone">
+            <div class="screen">
+              <div class="status">
+                <div class="brand-mini"><img src="assets/app-icon.png" alt="" />WortPilot</div>
+                <span class="pill">Drive</span>
+              </div>
+              <p class="eyebrow">Today</p>
+              <h4>Write a client-ready close.</h4>
+              <p class="small">Module 2 · Step 3 · Email sign-offs</p>
+              <div class="card">
+                <div class="row">
+                  <span class="speak">Mit freundlichen Grüßen</span>
+                  <span class="tag">tap audio</span>
+                </div>
+                <p class="small">Standard formal close. No comma. Name on the next line.</p>
+                <div class="progress"><span style="width: 42%"></span></div>
+              </div>
+              <div class="metric-grid">
+                <div class="metric"><strong>4</strong><span class="small">streak</span></div>
+                <div class="metric"><strong>7</strong><span class="small">due review</span></div>
+                <div class="metric"><strong>13</strong><span class="small">quiz cards</span></div>
+                <div class="metric"><strong>43</strong><span class="small">words banked</span></div>
+              </div>
+              <div class="card">
+                <h5>Weak-point radar</h5>
+                <p class="small">schreiben vs sprechen · Kunde · heute · salutation comma</p>
+              </div>
+              <div class="nav"><span class="active">⌂</span><span>▣</span><span>?</span><span>◌</span><span>☁</span></div>
+            </div>
+          </article>
+
+          <article class="phone">
+            <div class="screen">
+              <div class="status">
+                <span class="tag">Lesson</span>
+                <span class="pill">All German speaks</span>
+              </div>
+              <p class="eyebrow">Modul 2 · Schritt 3</p>
+              <h4>Email sign-offs</h4>
+              <div class="card">
+                <span class="speak">Beste Grüße</span>
+                <p class="small">Warmer but still safe for known business contacts.</p>
+              </div>
+              <div class="list">
+                <div class="lesson-line">
+                  <div><strong>Formal default</strong><p class="small">Client, lead, vendor</p></div>
+                  <span class="speak">Mit freundlichen Grüßen</span>
+                </div>
+                <div class="lesson-line">
+                  <div><strong>Warmer close</strong><p class="small">Known contact</p></div>
+                  <span class="speak">Viele Grüße</span>
+                </div>
+                <div class="lesson-line">
+                  <div><strong>Format rule</strong><p class="small">No comma after sign-off</p></div>
+                  <span class="tag">name below</span>
+                </div>
+              </div>
+              <div class="card">
+                <h5>Go deeper</h5>
+                <p class="small">When to use Liebe/Lieber, titles, and warmer chat endings.</p>
+              </div>
+              <div class="nav"><span>⌂</span><span class="active">▣</span><span>?</span><span>◌</span><span>☁</span></div>
+            </div>
+          </article>
+
+          <article class="phone">
+            <div class="screen">
+              <div class="status">
+                <span class="tag">Active recall</span>
+                <span class="pill">12/15</span>
+              </div>
+              <p class="eyebrow">Refresher quiz</p>
+              <h4>Drill the traps.</h4>
+              <div class="card">
+                <h5>Translate to English</h5>
+                <span class="speak">Kunde</span>
+                <div class="choice">account</div>
+                <div class="choice good">customer / client</div>
+                <div class="choice">contract</div>
+                <p class="small">Correct. This is a core business word.</p>
+              </div>
+              <div class="card">
+                <h5>Next mini-drill</h5>
+                <p class="small">schreiben = write · sprechen = speak</p>
+                <div class="progress"><span style="width: 68%"></span></div>
+              </div>
+              <div class="nav"><span>⌂</span><span>▣</span><span class="active">?</span><span>◌</span><span>☁</span></div>
+            </div>
+          </article>
+
+          <article class="phone">
+            <div class="screen">
+              <div class="status">
+                <span class="tag">Sync & safety</span>
+                <span class="pill">Local first</span>
+              </div>
+              <p class="eyebrow">Profile</p>
+              <h4>Your progress follows you.</h4>
+              <div class="card">
+                <div class="row"><strong>Google Drive</strong><span class="pill">appData</span></div>
+                <p class="small">Progress, quiz history, weak points, review queue, settings.</p>
+                <button class="mini-button">Sync now</button>
+              </div>
+              <div class="list">
+                <div class="list-item"><strong>JSON backup</strong><p class="small">Manual export/import</p></div>
+                <div class="list-item"><strong>Calendar reminder</strong><p class="small">Native iPhone alert via ICS</p></div>
+                <div class="list-item"><strong>Recordings</strong><p class="small">Stay local only</p></div>
+              </div>
+              <div class="nav"><span>⌂</span><span>▣</span><span>?</span><span>◌</span><span class="active">☁</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="concept-b" class="mockup-set dark">
+        <div class="set-head">
+          <div>
+            <p class="eyebrow">Concept B</p>
+            <h2>Deep Focus</h2>
+          </div>
+          <p>
+            A darker, more intense study mode. Better for night practice and pronunciation sessions, but less ideal
+            as the default because written business learning benefits from a calmer page-like surface.
+          </p>
+        </div>
+        <div class="phone-row">
+          <article class="phone">
+            <div class="screen">
+              <div class="status"><div class="brand-mini"><img src="assets/app-icon.png" alt="" />WortPilot</div><span class="pill">Focus</span></div>
+              <p class="eyebrow">Tonight</p>
+              <h4>Clear 7 reviews.</h4>
+              <div class="metric-grid">
+                <div class="metric"><strong>7</strong><span class="small">due</span></div>
+                <div class="metric"><strong>3</strong><span class="small">weak</span></div>
+              </div>
+              <div class="card"><span class="speak">heute</span><p class="small">Spelling: h-e-u-t-e. eu sounds like oy.</p></div>
+              <div class="card"><span class="speak">schreiben</span><p class="small">Scribe hook. Means to write.</p></div>
+              <div class="nav"><span class="active">⌂</span><span>▣</span><span>?</span><span>◌</span><span>☁</span></div>
+            </div>
+          </article>
+          <article class="phone">
+            <div class="screen">
+              <div class="status"><span class="tag">Talk-back</span><span class="pill">local</span></div>
+              <p class="eyebrow">Pronunciation</p>
+              <h4>Hear it. Say it. Replay it.</h4>
+              <div class="record-orb">≈</div>
+              <div class="card"><span class="speak">Sehr geehrter Herr Klein,</span><p class="small">Compare TTS with your recording.</p></div>
+              <div class="row"><span class="tag">Good</span><span class="tag">Unsure</span><span class="tag">Retry</span></div>
+              <div class="nav"><span>⌂</span><span>▣</span><span>?</span><span class="active">◌</span><span>☁</span></div>
+            </div>
+          </article>
+          <article class="phone">
+            <div class="screen">
+              <div class="status"><span class="tag">Writing coach</span><span class="pill">client</span></div>
+              <p class="eyebrow">Draft</p>
+              <h4>Fix the email before sending.</h4>
+              <div class="card">
+                <p class="small"><strong>Sehr geehrte Frau Weber,</strong><br />vielen Dank für Ihre Nachricht.</p>
+              </div>
+              <div class="list">
+                <div class="list-item">✓ salutation comma</div>
+                <div class="list-item">✓ Sie / Ihre capitalized</div>
+                <div class="list-item">• add sign-off</div>
+              </div>
+              <div class="nav"><span>⌂</span><span class="active">▣</span><span>?</span><span>◌</span><span>☁</span></div>
+            </div>
+          </article>
+          <article class="phone">
+            <div class="screen">
+              <div class="status"><span class="tag">Vocab</span><span class="pill">AI</span></div>
+              <p class="eyebrow">Bank</p>
+              <h4>Words for client work.</h4>
+              <div class="list">
+                <div class="list-item"><span class="speak">Angebot</span><p class="small">offer / proposal</p></div>
+                <div class="list-item"><span class="speak">Schnittstelle</span><p class="small">interface / API</p></div>
+                <div class="list-item"><span class="speak">Automatisierung</span><p class="small">automation</p></div>
+              </div>
+              <div class="nav"><span>⌂</span><span>▣</span><span>?</span><span class="active">◌</span><span>☁</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="concept-c" class="mockup-set compact">
+        <div class="set-head">
+          <div>
+            <p class="eyebrow">Concept C</p>
+            <h2>Compact Cards</h2>
+          </div>
+          <p>
+            Most utility-dense. Best if you want the app to feel like a personal study cockpit with less editorial
+            space and more immediate controls.
+          </p>
+        </div>
+        <div class="phone-row">
+          <article class="phone">
+            <div class="screen">
+              <div class="status"><div class="brand-mini"><img src="assets/app-icon.png" alt="" />WortPilot</div><span class="pill">0 offline</span></div>
+              <div class="metric-grid">
+                <div class="metric"><strong>Next</strong><span class="small">Email sign-offs</span></div>
+                <div class="metric"><strong>7</strong><span class="small">due</span></div>
+              </div>
+              <div class="card"><span class="speak">Mit freundlichen Grüßen</span><p class="small">Tap, mimic, mark complete.</p></div>
+              <div class="list">
+                <div class="list-item">Lesson queue</div>
+                <div class="list-item">Review queue</div>
+                <div class="list-item">Writing prompt</div>
+                <div class="list-item">Talk-back phrase</div>
+              </div>
+              <div class="nav"><span class="active">⌂</span><span>▣</span><span>?</span><span>◌</span><span>☁</span></div>
+            </div>
+          </article>
+          <article class="phone">
+            <div class="screen">
+              <div class="status"><span class="tag">Lesson</span><span class="pill">A/B/C</span></div>
+              <h4>Sections</h4>
+              <div class="list">
+                <div class="list-item"><strong>A · Standard close</strong><p class="small"><span class="speak">Mit freundlichen Grüßen</span></p></div>
+                <div class="list-item"><strong>B · Warmer</strong><p class="small"><span class="speak">Viele Grüße</span></p></div>
+                <div class="list-item"><strong>C · Format</strong><p class="small">No comma, name below.</p></div>
+              </div>
+              <div class="card"><strong>Continue / Review / Break</strong></div>
+              <div class="nav"><span>⌂</span><span class="active">▣</span><span>?</span><span>◌</span><span>☁</span></div>
+            </div>
+          </article>
+          <article class="phone">
+            <div class="screen">
+              <div class="status"><span class="tag">Quiz</span><span class="pill">instant grade</span></div>
+              <h4>Mixed recall</h4>
+              <div class="card">
+                <h5>Produce the salutation</h5>
+                <p class="small">Ms. Weber, formal, include punctuation.</p>
+                <div class="choice good">Sehr geehrte Frau Weber,</div>
+              </div>
+              <div class="card"><strong>Mini-drill triggered</strong><p class="small">Comma omitted twice.</p></div>
+              <div class="nav"><span>⌂</span><span>▣</span><span class="active">?</span><span>◌</span><span>☁</span></div>
+            </div>
+          </article>
+          <article class="phone">
+            <div class="screen">
+              <div class="status"><span class="tag">Settings</span><span class="pill">free</span></div>
+              <h4>Zero-cost controls.</h4>
+              <div class="list">
+                <div class="list-item">Google Drive appData sync</div>
+                <div class="list-item">JSON export / import</div>
+                <div class="list-item">Calendar reminder file</div>
+                <div class="list-item">TTS speed and voice</div>
+                <div class="list-item">Offline cache status</div>
+              </div>
+              <div class="nav"><span>⌂</span><span>▣</span><span>?</span><span>◌</span><span class="active">☁</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="coverage" class="mockup-set">
+        <div class="set-head">
+          <div>
+            <p class="eyebrow">Feature map</p>
+            <h2>Everything has a place.</h2>
+          </div>
+          <p>
+            This is the implementation checklist for whichever concept wins. Concept A covers all of it with the
+            least friction.
+          </p>
+        </div>
+        <div class="coverage">
+          <h3>Required flows</h3>
+          <div class="coverage-grid">
+            <div><strong>Dashboard</strong><span class="small">Next action, due reviews, streak, weak points, Drive status.</span></div>
+            <div><strong>Lesson</strong><span class="small">Why it matters, examples, tappable German, phonetics, recap.</span></div>
+            <div><strong>Quiz</strong><span class="small">Mixed recall, instant grading, reasons, targeted mini-drills.</span></div>
+            <div><strong>Vocab bank</strong><span class="small">Search, tags, weak markers, business/AI terms, audio.</span></div>
+            <div><strong>Writing coach</strong><span class="small">Client email prompts, salutation checks, Sie/Ihre checks, sign-offs.</span></div>
+            <div><strong>Talk-back</strong><span class="small">Hear phrase, record, replay, self-rate, local-only recordings.</span></div>
+            <div><strong>Reviews</strong><span class="small">Spaced review queue, due indicators, weak-point radar.</span></div>
+            <div><strong>Reminders</strong><span class="small">In-app prompts plus calendar export for iPhone notifications.</span></div>
+            <div><strong>Drive sync</strong><span class="small">Google sign-in, appDataFolder, last sync, conflict-aware profile.</span></div>
+            <div><strong>Backup</strong><span class="small">Manual JSON export/import, restore on another browser.</span></div>
+            <div><strong>Offline PWA</strong><span class="small">Installable, cached app shell, clear offline status.</span></div>
+            <div><strong>Settings</strong><span class="small">TTS rate, Google client ID, reminder hour, data controls.</span></div>
+          </div>
+        </div>
+        <div class="notes">
+          <div class="note"><strong>Recommendation</strong>Use Concept A as the main product direction. It is premium without sacrificing clarity.</div>
+          <div class="note"><strong>Borrow from B</strong>Add a dark focus mode later for nighttime talk-back and review sessions.</div>
+          <div class="note"><strong>Borrow from C</strong>Use compact cards inside review-heavy screens where speed matters.</div>
+        </div>
+        <div class="reference-card">
+          <div>
+            <p class="eyebrow">Imagegen reference</p>
+            <h3>Raster UI concept generated for inspiration</h3>
+            <p class="small">This image is a directional reference. The HTML mockups above are the implementation guide.</p>
+          </div>
+          <img src="assets/imagegen-ui-reference.png" alt="Image-generated WortPilot UI direction" />
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const buttons = [...document.querySelectorAll(".tabs button")];
+      const sets = [...document.querySelectorAll(".mockup-set")];
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          buttons.forEach((item) => item.classList.remove("active"));
+          sets.forEach((item) => item.classList.remove("active"));
+          button.classList.add("active");
+          document.getElementById(button.dataset.target).classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>
