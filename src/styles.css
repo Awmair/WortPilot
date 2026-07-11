@@ -154,12 +154,23 @@ p {
   overflow-x: auto;
 }
 
-.nav-actions button {
+.nav-actions a {
+  min-height: 44px;
   width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
-.nav-actions button.active {
+.nav-actions a.active {
   background: var(--green-soft);
   color: var(--green);
   border-color: rgba(14, 122, 99, 0.25);
@@ -896,7 +907,7 @@ body::before {
   overflow: visible;
 }
 
-.nav-actions button {
+.nav-actions a {
   width: auto;
   min-width: 0;
   min-height: 48px;
@@ -910,12 +921,12 @@ body::before {
   box-shadow: none;
 }
 
-.nav-actions button:hover {
+.nav-actions a:hover {
   transform: translateY(-1px);
   border-color: rgba(136, 226, 203, 0.28);
 }
 
-.nav-actions button.active {
+.nav-actions a.active {
   background: var(--focus-green-bg);
   color: var(--focus-green);
   border-color: rgba(136, 226, 203, 0.28);
@@ -1214,7 +1225,7 @@ input::placeholder {
     gap: 5px;
   }
 
-  .nav-actions button {
+  .nav-actions a {
     min-height: 44px;
     padding: 0;
   }

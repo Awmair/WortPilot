@@ -17,6 +17,7 @@ import {
   Sparkles,
   Upload,
 } from "lucide-react";
+import type { MouseEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AudioRecorder } from "./components/AudioRecorder";
 import { SpeakableGerman } from "./components/SpeakableGerman";
@@ -34,6 +35,28 @@ type VocabFilter = "all" | "learned" | "locked";
 
 const builtinClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const VOCAB_PAGE_SIZE = 120;
+const VIEW_NAMES: View[] = ["dashboard", "lesson", "quiz", "vocab", "practice", "sync"];
+
+function isView(value: string): value is View {
+  return VIEW_NAMES.includes(value as View);
+}
+
+function viewFromHash(hash: string): View | undefined {
+  const route = hash.replace(/^#\/?/, "");
+  if (!route.startsWith("view/")) return undefined;
+  const view = route.slice(5);
+  return isView(view) ? view : undefined;
+}
+
+function hashForView(view: View) {
+  return `#view/${view}`;
+}
+
+function resetInteractionLocks() {
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+}
 
 function normalize(answer: string) {
   return answer.trim().toLowerCase().replace(/\s+/g, " ");
@@ -674,7 +697,7 @@ function SyncView({
 
 export default function App() {
   const [profile, setProfile] = useState<UserProfile>(() => createDefaultProfile());
-  const [view, setView] = useState<View>("dashboard");
+  const [view, setView] = useState<View>(() => viewFromHash(window.location.hash) ?? "dashboard");
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -686,6 +709,16 @@ export default function App() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => undefined);
     }
+  }, []);
+
+  useEffect(() => {
+    function syncRouteFromHash() {
+      resetInteractionLocks();
+      setView(viewFromHash(window.location.hash) ?? "dashboard");
+    }
+
+    window.addEventListener("hashchange", syncRouteFromHash);
+    return () => window.removeEventListener("hashchange", syncRouteFromHash);
   }, []);
 
   const currentLesson = useMemo(
@@ -707,7 +740,30 @@ export default function App() {
     };
     await saveProfile(next);
     setProfile(next);
-    setView("dashboard");
+    navigateToView("dashboard");
+  }
+
+  function navigateToView(nextView: View) {
+    resetInteractionLocks();
+    setView(nextView);
+    const nextHash = hashForView(nextView);
+    if (window.location.hash !== nextHash) {
+      window.location.hash = nextHash;
+    }
+  }
+
+  function handleNavRouteClick(event: MouseEvent<HTMLElement>) {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const link = target.closest<HTMLAnchorElement>(".nav-actions a[data-view]");
+    if (!link) return;
+
+    const nextView = link.dataset.view;
+    if (!nextView || !isView(nextView)) return;
+
+    event.preventDefault();
+    navigateToView(nextView);
   }
 
   if (!ready) {
@@ -716,7 +772,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <nav className="topbar" aria-label="Primary navigation">
+      <nav className="topbar" aria-label="Primary navigation" onClickCapture={handleNavRouteClick}>
         <div className="nav-actions">
           {[
             ["dashboard", "Home", Home],
@@ -726,22 +782,22 @@ export default function App() {
             ["practice", "Speak", Mic],
             ["sync", "Sync", Cloud],
           ].map(([name, label, Icon]) => (
-            <button
+            <a
               key={name as string}
               className={view === name ? "active" : ""}
-              type="button"
-              onClick={() => setView(name as View)}
+              href={hashForView(name as View)}
+              data-view={name as string}
               title={label as string}
               aria-label={label as string}
             >
               <Icon size={18} />
               <span className="nav-label">{label as string}</span>
-            </button>
+            </a>
           ))}
         </div>
       </nav>
 
-      {view === "dashboard" ? <Dashboard profile={profile} currentLesson={currentLesson} setView={setView} /> : null}
+      {view === "dashboard" ? <Dashboard profile={profile} currentLesson={currentLesson} setView={navigateToView} /> : null}
       {view === "lesson" ? <LessonView lesson={currentLesson} profile={profile} onComplete={completeLesson} /> : null}
       {view === "quiz" ? <QuizView profile={profile} setProfile={setProfile} /> : null}
       {view === "vocab" ? <VocabView profile={profile} /> : null}

@@ -92,6 +92,8 @@ The auto-wrapper `TextWithGermanAudio` matches known vocabulary terms and wraps 
 ## Event Handling
 
 - The production app uses React event handlers, which are delegated by React instead of manually rebinding DOM listeners after each screen render.
+- Primary app navigation uses real hash links like `#view/dashboard` and renders the selected view immediately on tap.
+- Route changes are also synced from `hashchange`, so browser/PWA back-forward behavior stays coherent.
 - Do not add per-render `querySelector(...).addEventListener(...)` button wiring. If plain JavaScript screens are added later, use one stable delegated handler and `data-*` attributes.
 - Form/input flows should stay controlled through React state or a single stable delegated listener if a non-React surface is introduced.
 
@@ -144,6 +146,8 @@ Required files:
 
 - `public/manifest.webmanifest`
 - `public/sw.js`
+- Service worker cache names must be bumped for app releases that change JavaScript, CSS, or routing behavior.
+- The service worker caches only app-shell files and same-origin built assets, not every same-origin request.
 - `public/icon-192.png`
 - `public/icon-512.png`
 - `public/apple-touch-icon.png`

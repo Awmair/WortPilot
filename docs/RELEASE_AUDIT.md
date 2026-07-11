@@ -38,8 +38,9 @@ Measured production React app checks:
 - Vocabulary data audit: 3,000 unique IDs, 3,000 unique German entries, 0 missing required fields.
 - Cleanup audit: stale `German Pro` user-facing text removed; storage now writes `wortpilot-*` keys while reading legacy `german-pro-*` keys for migration.
 - Event-handling audit: no direct per-render DOM button bindings; React delegated event handlers are used for app controls.
-- Service worker cache bumped to `wortpilot-v2` so installed PWAs refresh the changed JavaScript/CSS cache.
 - iPhone tap audit: viewport uses `viewport-fit=cover`; tappable controls use `touch-action: manipulation` to avoid double-tap delay/zoom on controls.
+- iPhone nav audit: bottom nav uses real `#view/...` links, capture-phase route handling, immediate render on tap, and hashchange sync.
+- Service worker cache bumped to `wortpilot-v3`; cache writes are limited to app-shell files and same-origin built assets.
 
 ## Design Audit
 
